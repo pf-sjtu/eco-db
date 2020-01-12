@@ -28,17 +28,13 @@ cursor = db.cursor()
 cursor.execute("""create database if not exists station_db;
                   use station_db;""")
 
-def creat_table(cursor, tb_name, col_names, col_types, key_col, unique_cols = []):
+def creat_table(cursor, tb_name, col_names, col_types):
     sql_line = "create table if not exists {}(".format(tb_name)
-    for col_no, col_name in enumerate(col_names):
-        params = ""
-        if col_name == key_col:
-            params += " primary key"
-        if col_name in unique_cols:
-            params += " unique"
-        sql_line += " {} {} {}, ".format(col_name, col_types[col_no], params)
+    for col_name, col_type in zip(col_names, col_types):
+        col_info = "{} {}, ".format(col_name, col_type)
+        sql_line += col_info
     sql_line = sql_line.strip(', ')
-    sql_line += ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+    sql_line += ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
     #print(sql_line)
     cursor.execute(sql_line)
 
@@ -47,16 +43,16 @@ def aval_col_types(station_no):
     aval_cols = pd.DataFrame(aval_cols)
     aval_cols.reset_index(drop = True, inplace = True)
     aval_cols['type'] = 'float'
-    aval_cols[aval_cols['en_name'] == 'datetime'] = 'datetime'
+    aval_cols.loc[aval_cols['en_name'] == 'datetime', 'type'] = 'datetime'
     return aval_cols
 
 for ii in range(4):
     aval_cols = aval_col_types(ii)
-    tb_cols = aval_cols[0:0, :]
-    tb_cols[0] = ['no', ]
+    tb_cols = aval_cols.iloc[0:1, :].copy()
+    tb_cols.loc[0, :] = ['ID', 'int unsigned auto_increment primary key']
+    tb_cols = tb_cols.append(aval_cols)
     tb_name = station_info.loc[ii, 'db_table_name']
-    creat_table(cursor, tb_name, aval_cols['en_name'], aval_cols['type'],
-                'datetime')
+    creat_table(cursor, tb_name, tb_cols['en_name'], tb_cols['type'])
     print("Table for {} checked.".format(station_info.loc[ii, 'station_name2']))
 
 '''
