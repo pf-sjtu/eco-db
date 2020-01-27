@@ -8,6 +8,7 @@ Created on Sun Dec  8 21:55:29 2019
 import numpy as np
 import pandas as pd
 import requests
+from urllib import parse
 import datetime
 #http://ycmets.com/PC/download.asp?station_id=152&start_time=2019-12-08 00:00&stop_time=2019-12-08 21:51:30&station_name=崇明01
 from utils.global_variables import ROOT_PATH, TEMP_DIR, station_info, CH2EN_DICT, EN2CLEAN_DICT
@@ -30,23 +31,26 @@ class Download():
             self.beg_dt = self.creat_dt(beg_arr)
             self.end_dt = self.creat_dt(end_arr)
         self.station_no = station_no
-        self.station_id = station_info.loc[station_no, 'station_id']
-        self.station_name = station_info.loc[station_no, 'station_name1']
-        self.link = 'http://ycmets.com/PC/download.asp?station_id=' +  str(self.station_id) + \
-                        '&start_time=' + self.beg_dt.strftime("%Y-%m-%d %H:%M:%S") +\
-                        '&stop_time=' + self.end_dt.strftime("%Y-%m-%d %H:%M:%S") +\
-                        '&station_name=' + self.station_name
+
+        self.params = {'station_id':   station_info.loc[station_no, 'station_id'],
+                       'start_time':   self.beg_dt.strftime("%Y-%m-%d %H:%M:%S"),
+                       'stop_time':    self.end_dt.strftime("%Y-%m-%d %H:%M:%S"),
+                       'station_name': station_info.loc[station_no, 'station_name1']
+                       }
+        
+        self.link = 'http://ycmets.com/PC/download.asp?' + parse.urlencode(self.params)
+                        
+        print(self.link)
     def creat_dt(self, arr):
         return datetime.datetime(arr[0], arr[1], arr[2], arr[3], arr[4])
     def download(self, filename = '', verbose = False):
         # Download the data from Internet and save as csv.
         # Input: filename
-        self.r = requests.get(self.link)
-        self.size = self.get_size()
-        if verbose: print('成功获取数据，大小： {}'.format(self.size))
+        self.df = pd.read_excel(self.link)
+        self.mem_size = self.size_unify(np.sum(self.df.memory_usage()))
+        if verbose: print('成功获取数据，内存大小： {}'.format(self.mem_size))
         return self.save(filename, verbose)
-    def get_size(self):
-        bit = len(self.r.content)
+    def size_unify(self, bit):
         units = ['B', 'KB', 'MB', 'GB']
         unit_loc = int(np.power(bit, 1/1024))
         return '{:.2f}{}'.format(bit/np.power(1024, unit_loc), units[unit_loc])
@@ -57,14 +61,9 @@ class Download():
             filename = station_info.loc[self.station_no, 'station_name2'] + \
                 '_' + self.beg_dt.strftime("%Y-%m-%d-%H-%M-%S") + \
                 '_' + self.end_dt.strftime("%Y-%m-%d-%H-%M-%S")
-        xls_name = "{}\{}.xls".format(TEMP_DIR, filename)
         csv_name = "{}\{}.csv".format(TEMP_DIR, filename)
-        with open(xls_name, "wb") as f:
-            f.write(self.r.content)
-        f.close()
-        csv_temp = pd.read_excel(xls_name)
-        self.data_pre_process(csv_temp)
-        csv_temp.to_csv(csv_name, index = False, encoding = 'utf-8')
+        self.data_pre_process(self.df)
+        self.df.to_csv(csv_name, index = False, encoding = 'utf-8')
         if verbose: print('成功保存数据，位置： {}'.format(csv_name))
         return csv_name
     def data_pre_process(self, df):
