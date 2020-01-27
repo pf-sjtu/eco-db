@@ -8,10 +8,10 @@ import pandas as pd
 ## path
 ROOT_PATH = dirname(dirname(abspath(__file__)))
 
-STATION_INFO_PATH = '{}/config/station_info.csv'.format(ROOT_PATH)
-COL_INFO_PATH = '{}/config/col_info.csv'.format(ROOT_PATH)
+STATION_INFO_PATH = '{}\\config\\station_info.csv'.format(ROOT_PATH)
+COL_INFO_PATH = '{}\\config\\col_info.csv'.format(ROOT_PATH)
 
-TEMP_DIR = tempfile.mkdtemp()
+TEMP_DIR = abspath(tempfile.mkdtemp(prefix = 'eco-db_tmp'))
 
 ## info dataframe
 station_info = pd.read_csv(STATION_INFO_PATH, encoding = 'utf-8', sep = ',')

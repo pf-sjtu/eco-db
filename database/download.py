@@ -68,9 +68,10 @@ class Download():
         if verbose: print('成功保存数据，位置： {}'.format(csv_name))
         return csv_name
     def data_pre_process(self, df):
+        df.reindex(columns = ['datetime'] + df.index.tolist())
         df['datetime'] = df.apply(lambda x: datetime.datetime.strptime(x['日期'] + ' ' + x['时间'], "%Y-%m-%d %H:%M"), axis = 1)
         df.drop(['日期','时间'], axis = 1, inplace = True)
-        df.columns =  df.columns.map(CH2EN_DICT).map(EN2CLEAN_DICT)
+        df.columns = df.columns.map(CH2EN_DICT).map(EN2CLEAN_DICT)
     
 def test():
     print('In test mode...')

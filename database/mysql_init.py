@@ -10,6 +10,8 @@ import pandas as pd
 import MySQLdb
 from utils.global_variables import ROOT_PATH, station_info, col_info, clean_series
 
+add_id = 0
+
 
 # 打开数据库连接
 db = MySQLdb.connect(
@@ -46,31 +48,21 @@ def aval_col_types(station_no):
     aval_cols.loc[aval_cols['en_name'] == 'datetime', 'type'] = 'datetime'
     return aval_cols
 
+def add_col_front(aval_cols, col_name, col_type):
+    tb_cols = aval_cols.iloc[0:1, :].copy()
+    tb_cols.loc[0, :] = [col_name, col_type]
+    tb_cols = tb_cols.append(aval_cols)
+    return tb_cols
+
 for ii in range(4):
     aval_cols = aval_col_types(ii)
-    tb_cols = aval_cols.iloc[0:1, :].copy()
-    tb_cols.loc[0, :] = ['ID', 'int unsigned auto_increment primary key']
-    tb_cols = tb_cols.append(aval_cols)
+    if add_id:
+        tb_cols = add_col_front(aval_cols, 'ID', 'int unsigned auto_increment primary key')
+    else:
+        tb_cols = aval_cols
     tb_name = station_info.loc[ii, 'db_table_name']
     creat_table(cursor, tb_name, tb_cols['en_name'], tb_cols['type'])
     print("Table for {} checked.".format(station_info.loc[ii, 'station_name2']))
 
-'''
-cursor.execute("""create table if not exists {};
-                  use station_db;""".format(st_name, st_name))
 
-# 如果数据表已经存在使用 execute() 方法删除表。
-cursor.execute("DROP TABLE IF EXISTS EMPLOYEE")
-
-# 创建数据表SQL语句
-sql = """CREATE TABLE EMPLOYEE (
-         FIRST_NAME  CHAR(20) NOT NULL,
-         LAST_NAME  CHAR(20),
-         AGE INT,  
-         SEX CHAR(1),
-         INCOME FLOAT )"""
-
-cursor.execute(sql)
-
-# 关闭数据库连接
-db.close()'''
+db.close()
