@@ -7,11 +7,9 @@ Created on Sun Dec  8 21:55:29 2019
 """
 import numpy as np
 import pandas as pd
-import requests
 from urllib import parse
 import datetime
-#http://ycmets.com/PC/download.asp?station_id=152&start_time=2019-12-08 00:00&stop_time=2019-12-08 21:51:30&station_name=崇明01
-from utils.global_variables import ROOT_PATH, TEMP_DIR, station_info, CH2EN_DICT, EN2CLEAN_DICT
+from utils.global_variables import TEMP_DIR, station_info, CH2EN_DICT, EN2CLEAN_DICT
 
 class Download(): 
     def __init__(self, station_no, beg_arr = [], end_arr = []):
@@ -36,11 +34,9 @@ class Download():
                        'start_time':   self.beg_dt.strftime("%Y-%m-%d %H:%M:%S"),
                        'stop_time':    self.end_dt.strftime("%Y-%m-%d %H:%M:%S"),
                        'station_name': station_info.loc[station_no, 'station_name1']
-                       }
-        
+                       }        
         self.link = 'http://ycmets.com/PC/download.asp?' + parse.urlencode(self.params)
-                        
-        print(self.link)
+
     def creat_dt(self, arr):
         return datetime.datetime(arr[0], arr[1], arr[2], arr[3], arr[4])
     def download(self, filename = '', verbose = False):
@@ -59,18 +55,19 @@ class Download():
             filename = filename.split('.')[0]
         else:
             filename = station_info.loc[self.station_no, 'station_name2'] + \
-                '_' + self.beg_dt.strftime("%Y-%m-%d-%H-%M-%S") + \
-                '_' + self.end_dt.strftime("%Y-%m-%d-%H-%M-%S")
+                '_' + self.beg_dt.strftime("%Y%m%d-%H%M%S") + \
+                '_' + self.end_dt.strftime("%Y%m%d-%H%M%S")
         csv_name = "{}\{}.csv".format(TEMP_DIR, filename)
-        self.data_pre_process(self.df)
+        self.df = self.data_pre_process(self.df)
         self.df.to_csv(csv_name, index = False, encoding = 'utf-8')
         if verbose: print('成功保存数据，位置： {}'.format(csv_name))
         return csv_name
     def data_pre_process(self, df):
-        df.reindex(columns = ['datetime'] + df.index.tolist())
+        df = df.reindex(columns = ['datetime'] + df.columns.tolist())
         df['datetime'] = df.apply(lambda x: datetime.datetime.strptime(x['日期'] + ' ' + x['时间'], "%Y-%m-%d %H:%M"), axis = 1)
         df.drop(['日期','时间'], axis = 1, inplace = True)
         df.columns = df.columns.map(CH2EN_DICT).map(EN2CLEAN_DICT)
+        return df
     
 def test():
     print('In test mode...')
