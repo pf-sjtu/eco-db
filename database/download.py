@@ -93,15 +93,6 @@ class Download():
         db.commit()
         print("成功向数据库中插入数据条数：" + str(n_row_insert))
 
-'''
-def check_n_row(db, db_table_name):
-    db_cursor = db.cursor()
-    # check empty
-    n_row_table = db_cursor.fetchone(db_cursor.execute("SELECT COUNT(*) FROM {};".format(db_table_name)))
-    if n_row_table == 0:
-        return {'complete': True, 'empty': True, 'incomplete_beg': np.nan, 'incomplete_end': np.nan}
-    else:
-'''
 def check_station(db, db_table_name): 
     db_cursor = db.cursor()
     # check empty
@@ -111,7 +102,6 @@ def check_station(db, db_table_name):
         return np.nan
     else:
         sql_datetime_last = "SELECT datetime FROM {} ORDER BY datetime DESC LIMIT 1;".format(db_table_name)
-        print(sql_datetime_last)
         db_cursor.execute(sql_datetime_last)
         datetime_last = db_cursor.fetchone()[0]
         return datetime_last
