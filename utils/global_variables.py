@@ -6,12 +6,12 @@ from os.path import abspath, dirname
 import pandas as pd
 
 ## path
-ROOT_PATH = dirname(dirname(abspath(__file__)))
+ROOT_PATH = dirname(dirname(abspath(__file__))).replace('\\', '/')
 
-STATION_INFO_PATH = '{}\\config\\station_info.csv'.format(ROOT_PATH)
-COL_INFO_PATH = '{}\\config\\col_info.csv'.format(ROOT_PATH)
+STATION_INFO_PATH = '{}/config/station_info.csv'.format(ROOT_PATH)
+COL_INFO_PATH = '{}/config/col_info.csv'.format(ROOT_PATH)
 
-TEMP_DIR = abspath(tempfile.mkdtemp(prefix = 'eco-db_tmp'))
+TEMP_DIR = abspath(tempfile.mkdtemp(prefix = 'eco-db_tmp')).replace('\\', '/')
 
 ## info dataframe
 station_info = pd.read_csv(STATION_INFO_PATH, encoding = 'utf-8', sep = ',')
