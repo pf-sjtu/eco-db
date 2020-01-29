@@ -52,9 +52,13 @@ class Download():
         self.df = pd.read_excel(self.link)
         if len(self.df) == 0:
             print("警告：当前时间段内无数据或数据已经是最新，请2-5分钟后再重试。")
-        self.mem_size = self.size_unify(np.sum(self.df.memory_usage()))
-        if verbose: print('成功获取数据，内存大小：{}'.format(self.mem_size))
-        return self.save(filename, verbose)
+            self.is_empty = True
+            return np.nan
+        else:
+            self.is_empty = False
+            self.mem_size = self.size_unify(np.sum(self.df.memory_usage()))
+            if verbose: print('成功获取数据，内存大小：{}'.format(self.mem_size))
+            return self.save(filename, verbose)
     def size_unify(self, bit):
         units = ['B', 'KB', 'MB', 'GB']
         unit_loc = int(np.power(bit, 1/1024))
@@ -79,21 +83,24 @@ class Download():
         df = df[df.columns[~df.columns.isnull()]]
         return df
     def insert_to_db(self, db):
-        col_name_string = ('`' + self.df.columns.to_series() + '`,').sum().strip(',')
-        db_table_name = station_info.loc[self.station_no, 'db_table_name']
-        
-        db_cursor = db.cursor()
-        db_cursor.execute("USE station_db;")
-        sql_insert = """
-            LOAD DATA INFILE '{}' 
-                IGNORE INTO TABLE {}
-                CHARACTER SET utf8
-                FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' ESCAPED BY '\"' LINES TERMINATED by '\\r\\n'
-                IGNORE 1 LINES
-                ({});""".format(self.csv_dir, db_table_name, col_name_string)
-        n_row_insert = db_cursor.execute(sql_insert)
-        db.commit()
-        print("成功向数据库中插入数据条数：" + str(n_row_insert))
+        if not self.is_empty:
+            col_name_string = ('`' + self.df.columns.to_series() + '`,').sum().strip(',')
+            db_table_name = station_info.loc[self.station_no, 'db_table_name']
+            
+            db_cursor = db.cursor()
+            db_cursor.execute("USE station_db;")
+            sql_insert = """
+                LOAD DATA INFILE '{}' 
+                    IGNORE INTO TABLE {}
+                    CHARACTER SET utf8
+                    FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' ESCAPED BY '\"' LINES TERMINATED by '\\r\\n'
+                    IGNORE 1 LINES
+                    ({});""".format(self.csv_dir, db_table_name, col_name_string)
+            n_row_insert = db_cursor.execute(sql_insert)
+            db.commit()
+            print("成功向数据库中插入数据条数：" + str(n_row_insert))
+        else:
+            print("向数据库中插入数据失败：数据为空。")
 
 def check_station(db, db_table_name): 
     db_cursor = db.cursor()
@@ -111,7 +118,7 @@ def check_station(db, db_table_name):
         return datetime_firstlast
 
 def download_step(station_no, dt_beg, dt_end, verbose = False):
-    print("正在下载{}\t自{}至{}的数据...".format(station_info.loc[station_no, 'station_name2'], 
+    print("正在下载[{}]数据（{}->{})...".format(station_info.loc[station_no, 'station_name2'], 
                                                 dt_beg.strftime("%Y/%m/%d-%H:%M:%S"), 
                                                 dt_end.strftime("%Y/%m/%d-%H:%M:%S")))
     dl = Download(station_no, dt_beg, dt_end)
@@ -124,7 +131,7 @@ def auto_download_period(station_no, datetime_beg, datetime_end, max_data_int, v
         datetime_beg += max_data_int
     download_step(station_no, datetime_beg, datetime_end, verbose)
 
-def auto_download(db, datetime_beg = datetime.datetime(2019, 11, 10), 
+def auto_download(db, datetime_beg = datetime.datetime(2017, 1, 1), 
                   int_min = 5, max_data_int = datetime.timedelta(days=7), 
                   verbose = False):
     print('正在自动更新数据库数据，时间间隔：每{}分钟...'.format(int_min))
@@ -158,7 +165,7 @@ def test(db):
     print('In test mode...')
     beg_arr = [2019, 12, 8, 12, 0]
     end_arr = [2019, 12, 8, 13, 0]
-    dl = Download(0, beg_arr, end_arr)
+    dl = Download(3, beg_arr, end_arr)
     dl.download(verbose = True)
     dl.insert_to_db(db)
 
