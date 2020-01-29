@@ -50,6 +50,8 @@ class Download():
         # Download the data from Internet and save as csv.
         # Input: filename
         self.df = pd.read_excel(self.link)
+        if len(self.df) == 0:
+            print("警告：当前时间段内无数据或数据已经是最新，请2-5分钟后再重试。")
         self.mem_size = self.size_unify(np.sum(self.df.memory_usage()))
         if verbose: print('成功获取数据，内存大小：{}'.format(self.mem_size))
         return self.save(filename, verbose)
@@ -101,20 +103,30 @@ def check_station(db, db_table_name):
     if n_row_table[0] == 0:
         return np.nan
     else:
-        sql_datetime_last = "SELECT datetime FROM {} ORDER BY datetime DESC LIMIT 1;".format(db_table_name)
-        db_cursor.execute(sql_datetime_last)
-        datetime_last = db_cursor.fetchone()[0]
-        return datetime_last
+        datetime_firstlast = []
+        for order in ['ASC', 'DESC']:
+            sql_datetime_edge = "SELECT datetime FROM {} ORDER BY datetime {} LIMIT 1".format(db_table_name, order)
+            db_cursor.execute(sql_datetime_edge)
+            datetime_firstlast += [db_cursor.fetchone()[0]]
+        return datetime_firstlast
 
-def download_step(station_no, dt_beg, dt_end):
+def download_step(station_no, dt_beg, dt_end, verbose = False):
     print("正在下载{}\t自{}至{}的数据...".format(station_info.loc[station_no, 'station_name2'], 
                                                 dt_beg.strftime("%Y/%m/%d-%H:%M:%S"), 
                                                 dt_end.strftime("%Y/%m/%d-%H:%M:%S")))
     dl = Download(station_no, dt_beg, dt_end)
-    dl.download(verbose = True)
+    dl.download(verbose = verbose)
     dl.insert_to_db(db)
-                    
-def auto_download(db, int_min = 5, max_data_int = datetime.timedelta(days=7)):
+
+def auto_download_period(station_no, datetime_beg, datetime_end, max_data_int, verbose = False):
+    while datetime_beg + max_data_int < datetime_end:
+        download_step(station_no, datetime_beg, datetime_beg + max_data_int, verbose)
+        datetime_beg += max_data_int
+    download_step(station_no, datetime_beg, datetime_end, verbose)
+
+def auto_download(db, datetime_beg = datetime.datetime(2019, 11, 10), 
+                  int_min = 5, max_data_int = datetime.timedelta(days=7), 
+                  verbose = False):
     print('正在自动更新数据库数据，时间间隔：每{}分钟...'.format(int_min))
     db_cursor = db.cursor()
     # check empty
@@ -122,34 +134,38 @@ def auto_download(db, int_min = 5, max_data_int = datetime.timedelta(days=7)):
     while(True):
         for station_no in range(4):
             db_table_name = station_info.loc[station_no, 'db_table_name']
-            datetime_last = check_station(db, db_table_name)
-            if datetime_last == np.nan: continue
+            datetime_firstlast = check_station(db, db_table_name)
+            # if the table is empty, skip
+            if type(datetime_firstlast) != list: continue
+            datetime_first, datetime_last = datetime_firstlast
+            # if early data missing
+            if datetime_first > datetime_beg + max_data_int:
+                print('之前数据有缺失（{}->{}），正在补充...'.format(datetime_beg.strftime("%Y/%m/%d-%H:%M:%S"),
+                                              datetime_first.strftime("%Y/%m/%d-%H:%M:%S")))
+                auto_download_period(station_no, datetime_beg, datetime_first, max_data_int, verbose = verbose)
+            # if new data is not up to date
             datetime_now = datetime.datetime.now()
-            if type(datetime_last) == datetime.datetime and datetime_now > datetime_last:
-                while datetime_last + max_data_int < datetime_now:
-                    datetime_now = datetime_last + max_data_int
-                    download_step(station_no, datetime_last, datetime_now)
-                    datetime_last = datetime_now
-                    datetime_now = datetime.datetime.now()
-                download_step(station_no, datetime_last, datetime_now)
-        print('完成，休眠{}分钟。'.format(int_min))
-        time.sleep(int_min * 60)
+            if datetime_now > datetime_last:
+                auto_download_period(station_no, datetime_last, datetime_now, max_data_int, verbose = verbose)
+        print('本次同步完成（{}->{}），休眠{}分钟。'.format(datetime_beg.strftime("%Y/%m/%d-%H:%M:%S"),
+                                              datetime_now.strftime("%Y/%m/%d-%H:%M:%S"),
+                                              int_min))
+        for sleep_period in range (int_min * 12):
+            time.sleep(5)
 
     
-def test():
+def test(db):
     print('In test mode...')
     beg_arr = [2019, 12, 8, 12, 0]
     end_arr = [2019, 12, 8, 13, 0]
     dl = Download(0, beg_arr, end_arr)
     dl.download(verbose = True)
-    
-    db = connect_db()
     dl.insert_to_db(db)
-    close_db(db)
 
 if __name__ == '__main__':
     db = connect_db()
     auto_download(db)
+    #test(db)
     close_db(db)
 
 
