@@ -10,8 +10,8 @@ import pandas as pd
 from urllib import parse
 import time
 import datetime
-from utils.global_variables import TEMP_DIR, station_info, CH2EN_DICT, EN2CLEAN_DICT
-from database.mysql_init import connect_db, close_db
+from utils.global_variables import STATION_NUM, TEMP_DIR, station_info, CH2EN_DICT, EN2CLEAN_DICT
+from database.mysql_init import connect_db, close_db, insert_to_db
 
 
 class Download(): 
@@ -84,20 +84,11 @@ class Download():
         return df
     def insert_to_db(self, db):
         if not self.is_empty:
-            col_name_string = ('`' + self.df.columns.to_series() + '`,').sum().strip(',')
-            db_table_name = station_info.loc[self.station_no, 'db_table_name']
-            
-            db_cursor = db.cursor()
-            db_cursor.execute("USE station_db;")
-            sql_insert = """
-                LOAD DATA INFILE '{}' 
-                    IGNORE INTO TABLE {}
-                    CHARACTER SET utf8
-                    FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' ESCAPED BY '\"' LINES TERMINATED by '\\r\\n'
-                    IGNORE 1 LINES
-                    ({});""".format(self.csv_dir, db_table_name, col_name_string)
-            n_row_insert = db_cursor.execute(sql_insert)
-            db.commit()
+            n_row_insert = insert_to_db(db, 
+                                        self.csv_dir, 
+                                        station_info.loc[self.station_no, 'db_table_name'], 
+                                        self.df.columns.to_series())
+
             print("成功向数据库中插入数据条数：" + str(n_row_insert))
         else:
             print("向数据库中插入数据失败：数据为空。")
@@ -131,7 +122,7 @@ def auto_download_period(station_no, datetime_beg, datetime_end, max_data_int, v
         datetime_beg += max_data_int
     download_step(station_no, datetime_beg, datetime_end, verbose)
 
-def auto_download(db, datetime_beg = datetime.datetime(2017, 1, 1), 
+def auto_download(db, datetime_beg = datetime.datetime(2020, 1, 1), 
                   int_min = 5, max_data_int = datetime.timedelta(days=7), 
                   verbose = False):
     print('正在自动更新数据库数据，时间间隔：每{}分钟...'.format(int_min))
@@ -139,7 +130,7 @@ def auto_download(db, datetime_beg = datetime.datetime(2017, 1, 1),
     # check empty
     db_cursor.execute("USE station_db;")
     while(True):
-        for station_no in range(4):
+        for station_no in range(STATION_NUM):
             db_table_name = station_info.loc[station_no, 'db_table_name']
             datetime_firstlast = check_station(db, db_table_name)
             # if the table is empty, skip

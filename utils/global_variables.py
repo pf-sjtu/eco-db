@@ -5,6 +5,9 @@ import tempfile
 from os.path import abspath, dirname
 import pandas as pd
 
+## number of stations
+STATION_NUM = 4
+
 ## path
 ROOT_PATH = dirname(dirname(abspath(__file__))).replace('\\', '/')
 
@@ -22,7 +25,7 @@ col_info = pd.read_csv(COL_INFO_PATH, encoding = 'utf-8', sep = ',')
 # From: Chinese name; Into: English name
 CH2EN_DICT = dict()
 CH2EN = col_info['en_name'].copy()
-for ii in range(4):
+for ii in range(STATION_NUM):
     CH2EN.index = col_info['label' + str(ii)]
     CH2EN_DICT.update(CH2EN.to_dict())
 
