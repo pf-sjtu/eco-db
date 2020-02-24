@@ -1,0 +1,49 @@
+/* About */
+h2{
+    margin-top: 50px;
+}
+.paragraph p{
+    text-indent: 2em;
+}
+
+/* Index */
+#screenSizeSwitchGroup{
+    text-align: center; 
+    color: #00aaff;
+}
+
+/* History Tab */
+.searchBox{
+    padding-top: 2%;
+    padding-bottom: 2%;
+    text-align: center;
+}
+
+/* History Graph */
+#graphDataSearchBox{
+    /* width: 80%; */
+    text-align: left;
+}
+#graphFrame{
+    height: 600px;
+    width: 100%;
+} 
+.bold{
+    font-weight: bold;
+}
+.fixedHeight{
+    height: 35px;
+}
+.fixedHeight2{
+    height: 45px;
+}
+
+/* Live */
+.floatCard{
+    width: 400px;
+    float: left;
+    padding: 20px;
+}
+.liveCardContent{
+    font-size: small;
+}

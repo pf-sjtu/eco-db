@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>SURFES-db</title>
+        <link rel="stylesheet" type="text/css" href="css/indexLayout.css">
+    </head>
+    <body>
+        <!-- 加载外部资源 -->
+        <div id="loadingProgress">
+            正在加载资源
+            <progress id="loadingProgressBar" value="0" max="6"></progress> 
+            <!-- Step1 vue -->
+            <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
+            <script type="text/javascript" src="ext/vue/vue.js"></script>
+            <script type="text/javascript" src="js/loadingStep.js"></script>
+            <!-- Step2 ivew -->
+            <!-- <script type="text/javascript" src="http://unpkg.com/view-design/dist/iview.min.js"></script> -->
+            <script type="text/javascript" src="ext/viewui/iview.min.js"></script>
+            <script type="text/javascript" src="js/loadingStep.js"></script>
+            <!-- Step3 ECharts -->
+            <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script> -->
+            <script type="text/javascript" src="ext/echarts/echarts2.js"></script>
+            <script type="text/javascript" src="js/loadingStep.js"></script>
+            <!-- Step4 JQuery -->
+            <!-- <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script> -->
+            <script type="text/javascript" src="ext/jquery/jquery-3.4.1.js"></script>
+            <script type="text/javascript" src="js/loadingStep.js"></script>
+            <!-- Step5 myScripts -->
+            <script type="text/javascript" src="js/pfUtils.js"></script>
+            <script type="text/javascript" src="js/layout.js"></script>
+            <script type="text/javascript" src="js/loadingStep.js"></script>
+            <!-- Step6 css -->
+            <!-- <link rel="stylesheet" type="text/css" href="http://unpkg.com/view-design/dist/styles/iview.css"> -->
+            <link rel="stylesheet" type="text/css" href="ext/viewui/iview.css">
+            <link rel="stylesheet" type="text/css" href="css/indexDetail.css">
+            <script type="text/javascript" src="js/loadingStep.js"></script>
+
+    </div>
+    <div id="container">
+        <div id="heading">
+            <!-- 标题栏 -->
+            <div id="headingName">
+                <h1>
+                    S<i>hanghai</i> UR<i>ban</i> F<i>orest</i> E<i>cological</i> S<i>tation</i> <i>database</i>
+                    <p id="intro">上海城市森林生态站数据库前台系统</p>
+                </h1>
+            </div>
+        </div>
+        <div id="content">
+            <div id="contentNav">
+                <!-- 侧边菜单 -->
+                <!-- <Affix id="leftMenu" :offset-top="50"> -->
+                <div id="leftMenu">
+                    <!-- 菜单内容 -->
+                    <i-menu @on-select="updateHiddenState" :mode="mode" :theme="theme" :active-name="activeName" :width="width">
+                        <menu-item v-for="(item, index) in items" :key="index" :name="index">
+                            <icon :type="item.iconType"></icon>
+                            {{ item.title }}
+                        </menu-item>
+                        <br />
+                    </i-menu>
+                    <!-- 宽屏模式 -->
+                    <div id="screenSizeSwitchGroup">
+                        <i-switch @on-change="switchScreenSize"></i-switch>
+                        <p id="screenSizeSwitch">宽屏模式</p>
+                    </div>
+                </div>
+                <!-- </Affix> -->
+            </div>
+            <div id="contentBody">
+                <!-- 页面内容 -->
+                <!-- 站点实况 -->
+                <div id="live" class="contentDiv" hidden>
+                    live
+                </div>
+                <!-- 数据图表 -->
+                <div id="historyGraph" class="contentDiv" hidden>
+                    historyGraph
+                </div>
+                <!-- 数据条目 -->
+                <div id="historyTable" class="contentDiv" hidden>
+                    historyTable
+                </div>
+                <div id="download" class="contentDiv" hidden>
+                    download
+                </div>
+                <div id="setting" class="contentDiv" hidden>
+                    setting
+                </div>
+                <div id="about" class="contentDiv" hidden>
+                    <div class="paragraph">
+                        <h2>本项目</h2>
+                        <p>本项目基于来自国家林草局上海城市森林生态系统国家定位观测研究站的相关实测数据，旨在于此技术上构建数据库进行统计整理和展示，相关观测站的维护由上海交通大学农业与生物学院完成。</p>
+                        <p>欢迎各位学者在此基础上进行更深入的研究，或与我进行邮件交流。</p>
+                        <br /> <i>相关网站：</i>
+                        <p><a target="_blank" href="http://www.agri.sjtu.edu.cn/old/Data/View/3255">国家林草局上海城市森林生态系统国家定位观测研究站</a></p>
+                        <p><a target="_blank" href="http://www.agri.sjtu.edu.cn">上海交通大学农业与生物学院</a></p>
+                        <h2>网站维护者</h2>
+                        <p>彭丰 <a target="_blank" href="mailto:im.pengf@outlook.com">im.pengf@outlook.com</a></p>
+                        <p>上海交通大学农业与生物学院 16级本科生</p>
+                        <h2>更新历史</h2>
+                        <ul>
+                            <li>2020年2月2日 网站正式上线</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="footing">
+            <!-- 页脚 -->
+            <div id="footingInfo">
+                <a target="_blank" href="http://www.agri.sjtu.edu.cn/old/Data/View/3255">国家林草局上海城市森林生态系统国家定位观测研究站</a> |
+                <a target="_blank" href="http://www.agri.sjtu.edu.cn">上海交通大学农业与生物学院</a> <br />
+                <a target="_blank" href="mailto:im.pengf@outlook.com">维护：彭丰 im.pengf@outlook.com</a>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="js/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<div id="dataDownloadingBox" class="searchBox">
+    <Row class="fixedHeight" type="flex" justify="start">
+        <i-col span="2" offset="1" class="bold">
+            范围
+        </i-col>
+        <i-col span="7">
+            <label for="dtDBeg">起始</label>
+            <input type="datetime-local" id="dtDBeg" v-model="dtBegStr" required/>
+        </i-col>
+        <i-col span="7">
+            <label for="dtDEnd">结束</label>
+            <input type="datetime-local" id="dtDEnd" v-model="dtEndStr" required/>
+        </i-col>
+    </Row>
+    <Row class="fixedHeight" type="flex" justify="start">
+        <i-col span="2" offset="1" class="bold">
+            站点
+        </i-col>
+        <i-col span="21">
+            <Checkbox-Group v-model="stationNoSelected">
+                <Checkbox v-for="(station, index) in stations"
+                :key="index"
+                :label="index">{{ station.station_name2 }}&nbsp;&nbsp;</Checkbox>
+            </Checkbox-Group>
+        </i-col>
+    </Row>
+    <Row class="fixedHeight" type="flex" justify="start">
+        <Divider dashed></Divider>
+    </Row>    
+    <Row type="flex" justify="center">
+        <i-col span="4">
+            <button @click="requestData" :disabled="dataRequesting">读取数据</button>
+        </i-col>
+        <i-col span="4">
+            <button @click="downloadCsv" :disabled="!dataReady">下载CSV格式</button>
+        </i-col>
+    </Row>    
+    <Row class="fixedHeight" type="flex" justify="start">
+        <Divider dashed></Divider>
+    </Row>
+    <Row class="fixedHeight" type="flex" justify="start">
+        <i-col span="2" offset="1" class="bold">
+            信息
+        </i-col>
+        <i-col span="21">
+            <Row type="flex" justify="start" v-if="dataReady" v-for="(cols, index) in colNames" :key="index">
+                <i-col span="2" offset="1">
+                    [{{ index }}]
+                </i-col>
+                <i-col span="21">
+                    读取到{{ csvInfo[index].dtBegStr }}至{{ csvInfo[index].dtBegStr }}来自{{ csvInfo[index].stationInfo.station_name2 }}的{{ cols.length }}个项目，共{{ dataArrays[index].length }}条记录。
+                </i-col>
+            </Row>
+        </i-col>
+    </Row>
+</div>
+
+<script type="text/javascript" src="js/download.js"></script>

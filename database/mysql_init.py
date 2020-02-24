@@ -8,7 +8,7 @@ Created on Fri Jan 10 03:50:37 2020
 
 import pandas as pd
 import MySQLdb
-from utils.global_variables import TEMP_DIR, STATION_NUM, station_info, col_info, clean_series
+from utils.global_variables import TEMP_DIR, STATION_NUM, EN2CLEAN_DICT, station_info, col_info, clean_series
 
 add_id = False
 
@@ -77,6 +77,27 @@ def num_filter(string, remove_num = True):
     else:
         return ''.join(list(filter(lambda x:x in '0123456789', string)))
 
+def update_table(db, table_name_str, csv_dir, df, primary_str, primary_type_str):
+    cols = pd.DataFrame()
+    cols['name'] = list(df.columns)
+    cols['types'] = list(df.dtypes.astype(str).apply(num_filter).replace('object', 'varchar(100)'))
+    cols.loc[cols['name'] == primary_str, 'types'] = primary_type_str
+    creat_table(db_cursor, table_name_str, cols['name'], cols['types'])
+    df.to_csv(csv_dir, encoding = 'utf-8', index = False)
+    row_num = insert_to_db(db, 
+                           csv_dir, 
+                           table_name_str, 
+                           cols['name'],
+                           replace = True)
+    return row_num
+
+def delete_table(db, table_name_str):
+    db_cursor = db.cursor()
+    db_cursor.execute("USE station_db;")
+    sql_drop = "DROP TABLE IF EXISTS {};".format(table_name_str)
+    db_cursor.execute(sql_drop)
+    print("成功删除表{}。".format(table_name_str))
+
 if __name__ == '__main__':
     db = connect_db()
     db_cursor = db.cursor()
@@ -89,17 +110,23 @@ if __name__ == '__main__':
         creat_table(db_cursor, tb_name, tb_cols['en_name'], tb_cols['type'])
     
     # create station info
-    s_info_cols = pd.DataFrame()
-    s_info_cols['name'] = list(station_info.columns)
-    s_info_cols['types'] = list(station_info.dtypes.astype(str).apply(num_filter).replace('object', 'varchar(100)'))
-    s_info_cols.loc[s_info_cols['name'] == 'station_no', 'types'] = 'int primary key'
-    creat_table(db_cursor, 'station_info', s_info_cols['name'], s_info_cols['types'])
+    delete_table(db, 'station_info')
     s_info_tmp_dir = TEMP_DIR + '/s_info.csv'
     station_info.to_csv(s_info_tmp_dir, encoding = 'utf-8', index = False)
-    s_num = insert_to_db(db, 
-                         s_info_tmp_dir, 
-                         'station_info', 
-                         s_info_cols['name'],
-                         replace = True)
+    s_num = update_table(db, 'station_info', s_info_tmp_dir, station_info,\
+                         'station_no', 'int primary key')
     print("{}条站点信息已更新。".format(s_num))
+    
+    # create column info
+    delete_table(db, 'col_info')
+    c_info = col_info.loc[~col_info['data_label'].isin(['日期','时间']), :].reset_index(drop = True)
+    c_info = c_info.reset_index(drop = False)
+    c_info.rename(columns={'index': 'id'}, inplace=True) 
+    c_info['db_name'] = c_info['en_name'].map(EN2CLEAN_DICT)
+    c_info_tmp_dir = TEMP_DIR + '/c_info.csv'
+    c_info.to_csv(c_info_tmp_dir, encoding = 'utf-8', index = False)
+    c_num = update_table(db, 'col_info', c_info_tmp_dir, c_info, 
+                         'id', 'int primary key')
+    print("{}条表头信息已更新。".format(c_num))
+
     close_db(db)

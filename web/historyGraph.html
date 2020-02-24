@@ -1,0 +1,109 @@
+<div id="graphDataSearchBox" class="searchBox">
+    <Row class="fixedHeight" type="flex" justify="start">
+        <i-col span="2" offset="1" class="bold">
+            范围
+        </i-col>
+        <i-col span="7">
+            <label for="dtGBeg">起始</label>
+            <input type="datetime-local" id="dtGBeg" v-model="dtBegStr" required/>
+        </i-col>
+        <i-col span="7">
+            <label for="dtGEnd">结束</label>
+            <input type="datetime-local" id="dtGEnd" v-model="dtEndStr" required/>
+        </i-col>
+    </Row>
+    <Row class="fixedHeight" type="flex" justify="start">
+        <i-col span="2" offset="1" class="bold">
+            站点
+        </i-col>
+        <i-col span="21">
+            <Checkbox-Group v-model="selectedStations">
+                <Checkbox v-for="(station, index) in stations"
+                :key="index"
+                :label="index">{{ station.station_name2 }}</Checkbox>
+            </Checkbox-Group>
+        </i-col>
+    </Row>
+    <Row class="fixedHeight" type="flex" justify="start">
+        <i-col span="2" offset="1" class="bold">
+            筛选
+        </i-col>
+        <i-col span="2">
+            <input type="radio" name="mode" value="0" v-model="setMode"/>并集
+        </i-col>
+        <i-col span="2">
+            <input type="radio" name="mode" value="1" v-model="setMode"/>交集
+        </i-col>
+    </Row>
+    <Row type="flex" justify="center">
+        <i-col span="20">
+            <Divider dashed></Divider>
+        </i-col>
+    </Row>
+    <Row type="flex" justify="start">
+        <i-col span="2" offset="1" class="bold">
+            数据
+        </i-col>
+        <i-col span="21">
+            <Row type="flex" justify="start">
+                <template v-for="colSet in colSets">
+                    <button @click="colKeySelected=colSet.set">{{ colSet.title }}</button>
+                    <i-col span="1"></i-col>
+                </template>
+            </Row>
+            <Row type="flex" justify="start">
+                <Checkbox-Group v-model="colKeySelected">
+                    <Checkbox v-for="(col, index) in colDisplayArr"
+                    :key="index"
+                    :label="col.key">{{ col.title }}&nbsp;&nbsp;</Checkbox>
+                </Checkbox-Group>
+            </Row>
+        </i-col>
+    </Row>
+    <Row type="flex" justify="center">
+        <i-col span="20">
+            <Divider dashed></Divider>
+        </i-col>
+    </Row>
+    <Row class="fixedHeight2" type="flex" justify="center" class="bold">
+        <i-col class="bold" span="15" offset="1">
+            项目
+        </i-col>
+        <i-col span="3">
+            x轴
+        </i-col>
+        <i-col span="5">
+            倍数
+        </i-col>
+    </Row>
+    <Row class="fixedHeight2" type="flex" justify="center"  v-for="(col, colIndex) in colSelected" :key="colIndex">
+        <i-col span="15" offset="1">
+            {{ col.title }}
+        </i-col>
+        <i-col span="3">
+            <input type="radio" name="xAxis" :value="colIndex" v-model="xAxis"/>
+        </i-col>
+        <i-col span="5">
+            <input type="text" style="width: 100%;" v-model="colRate[colIndex]" :placeholder="defaultColRate" :disabled="xAxis==colIndex"/>
+        </i-col>
+    </Row>
+    <Row class="fixedHeight2" type="flex" justify="center">
+        <i-col span="7">
+            <input type="checkbox" v-model="graphSmooth">图线平滑</input>
+        </i-col>
+        <i-col span="5">
+            <button @click="updateGraph" :disabled="colKeySelected.length<2">生成</button>
+        </i-col>
+    </Row>
+    <Row type="flex" justify="center">
+        <i-col span="20">
+            <Divider dashed></Divider>
+        </i-col>
+    </Row>
+    <Row type="flex" justify="center">
+        <div id="graphFrame"></div>
+    </Row>
+
+</div>
+
+<script type="text/javascript" src="js/graphFrame.js"></script>

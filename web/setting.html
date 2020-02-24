@@ -1,0 +1,22 @@
+<div id="settingProp">
+    <div class="settingBox">
+        <label for="pointSlider">图最大数据点(个)</label>
+        <Slider id="pointSlider" v-model="pointNum" :min="pointNumMin" :max="pointNumMax" show-input></Slider>
+    </div>
+    <br />
+    <div class="settingBox">
+        <label for="dataPeriod">查询的时间跨度(小时)</label>
+        <Slider id="dataPeriod" v-model="dataHour" :min="dataHourMin" :max="dataHourMax" show-input></Slider>
+    </div>
+    <br />
+    <div class="settingBox">
+        <p>实况页关键列</p>
+        <Checkbox-Group v-model="keyCols">
+            <Checkbox v-for="(col, index) in cols"
+            :key="index"
+            :label="col.key">{{ col.title }}</Checkbox>
+        </Checkbox-Group>
+    </div>
+</div>
+
+<script type="text/javascript" src="js/setting.js"></script>

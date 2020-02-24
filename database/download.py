@@ -11,7 +11,7 @@ from urllib import parse
 import time
 import datetime
 from utils.global_variables import STATION_NUM, TEMP_DIR, station_info, CH2EN_DICT, EN2CLEAN_DICT
-from database.mysql_init import connect_db, close_db, insert_to_db
+from mysql_init import connect_db, close_db, insert_to_db
 
 
 class Download(): 

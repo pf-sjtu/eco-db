@@ -1,0 +1,34 @@
+<div id="dataSearchBox" class="searchBox">
+    <Row class="fixedHeight" type="flex" justify="start">
+        <i-col span="9">
+            <label class="bold" for="stationOptions">观测站</label>
+            <select id="stationOptions" v-model="stationName" required>
+                <option v-for="station in stations">
+                    {{ station.station_name2 }}
+                </option>
+            </select>
+        </i-col>
+        <i-col span="7">
+            <label class="bold" for="dtBeg">起始</label>
+            <input type="datetime-local" id="dtBeg" v-model="dtBegStr" required/>
+        </i-col>
+        <i-col span="7">
+            <label class="bold" for="dtEnd">结束</label>
+            <input type="datetime-local" id="dtEnd" v-model="dtEndStr" required/>
+        </i-col>
+        <i-col span="1">
+            <button onclick="queryDetailLimited()" :disabled="dataReady">查询</button>
+        </i-col>
+    </Row>
+</div>
+
+<i-table id="dataTab" 
+:columns="columns" 
+:data="tableData" 
+:loading="loading" 
+:stripe="stripe"
+:border="border"
+:size="size"
+></i-table>
+
+<script type="text/javascript" src="js/historySearchBox.js"></script>

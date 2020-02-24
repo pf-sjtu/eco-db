@@ -1,4 +1,4 @@
-﻿data_label,en_name,unit,station0,station1,station2,station3,label0,label1,label2,label3
+data_label,en_name,unit,station0,station1,station2,station3,label0,label1,label2,label3
 datetime,datetime,,1,1,1,1,datetime,datetime,datetime,datetime
 日期,date,,0,0,0,0,日期,日期,日期,日期
 时间,time,,0,0,0,0,时间,时间,时间,时间
@@ -81,7 +81,7 @@ PUCN2,PUCN2,,0,1,0,0,,PUCN2,,
 底层温度,temperature (bottom),℃,1,0,1,1,底层温度,,底层温度,TEMP
 底层湿度,humidity (bottom),%,1,0,1,1,底层湿度,,底层湿度,HUMI
 底层风速,wind speed (bottom),m/s,1,0,1,0,底层风速,,底层风速,
-地面层总辐射,lradiation (total ground),W/cm2,1,0,1,1,近地层总辐射,,地面层总辐射,SOLA
+地面层总辐射,radiation (total ground),W/cm2,1,0,1,1,近地层总辐射,,地面层总辐射,SOLA
 地面层净辐射,radiation (net ground),W/cm2,1,0,1,0,近地层净辐射,,地面层净辐射,
 地面层紫外辐射,radiation (UV ground),W/cm2,1,0,1,1,近地层紫外辐射,,地面层紫外辐射,ULT
 地面层温度,temperature (ground),℃,1,0,1,0,近地层温度,,地面层温度,
