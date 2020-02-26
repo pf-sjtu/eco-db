@@ -128,9 +128,7 @@ def auto_download(db, datetime_beg = datetime.datetime(2020, 1, 1),
                   int_min = 5, max_data_int = datetime.timedelta(days=7), 
                   verbose = False):
     print('正在自动更新数据库数据，时间间隔：每{}分钟...'.format(int_min))
-    db_cursor = db.cursor()
     # check empty
-    db_cursor.execute("USE station_db;")
     while(True):
         for station_no in range(STATION_NUM):
             db_table_name = station_info.loc[station_no, 'db_table_name']

@@ -14,14 +14,17 @@ from utils.global_variables import TEMP_DIR, STATION_NUM, EN2CLEAN_DICT, station
 
 add_id = False
 
-def connect_db():
+def connect_db(root_database = False):
     # 打开数据库连接
+    db_name = 'station_db'
+    if root_database:
+        db_name = 'mysql'
     db = MySQLdb.connect(
             host='localhost',
             port = 3306,
             user='root',
             passwd='mmtt2356',
-            db ='mysql')
+            db = db_name)
     return db
 
 def close_db(db):
@@ -35,7 +38,6 @@ def creat_table(db_cursor, tb_name, col_names, col_types):
         sql_line += col_info
     sql_line = sql_line.strip(', ')
     sql_line += ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
-    db_cursor.execute("USE station_db;")
     db_cursor.execute(sql_line)
     print("表{}已创建。".format(tb_name))
 
@@ -60,7 +62,6 @@ def aval_col_types(station_no):
 def insert_to_db(db, csv_dir, db_table_name, col_name_series, replace = False):
     col_name_string = ('`' + col_name_series + '`,').sum().strip(',')
     db_cursor = db.cursor()
-    db_cursor.execute("USE station_db;")
     method = 'REPLACE' if replace else 'IGNORE'
     sql_insert = """
         LOAD DATA INFILE '{}' 
@@ -95,13 +96,12 @@ def update_table(db, table_name_str, csv_dir, df, primary_str, primary_type_str)
 
 def delete_table(db, table_name_str):
     db_cursor = db.cursor()
-    db_cursor.execute("USE station_db;")
     sql_drop = "DROP TABLE IF EXISTS {};".format(table_name_str)
     db_cursor.execute(sql_drop)
     print("成功删除表{}。".format(table_name_str))
 
 if __name__ == '__main__':
-    db = connect_db()
+    db = connect_db(True)
     db_cursor = db.cursor()
     
     db_cursor.execute("""create database if not exists station_db;
