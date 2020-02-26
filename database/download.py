@@ -10,6 +10,8 @@ import pandas as pd
 from urllib import parse
 import time
 import datetime
+
+import add_path
 from utils.global_variables import STATION_NUM, TEMP_DIR, station_info, CH2EN_DICT, EN2CLEAN_DICT
 from mysql_init import connect_db, close_db, insert_to_db
 

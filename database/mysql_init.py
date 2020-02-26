@@ -8,6 +8,8 @@ Created on Fri Jan 10 03:50:37 2020
 
 import pandas as pd
 import MySQLdb
+
+import add_path
 from utils.global_variables import TEMP_DIR, STATION_NUM, EN2CLEAN_DICT, station_info, col_info, clean_series
 
 add_id = False
