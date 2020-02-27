@@ -1,11 +1,11 @@
-var leftMenu = new Vue({
-    el: '#leftMenu',
+let topNav = new Vue({
+    el: '#topNav',
     data: {
-        mode: 'vertical',
+        menuOpen: false,
         theme: 'light',
-        width: '100%',
+        menuWidth: '45rem',
         activeName: 5,
-        footingActiveName: [0, 5],
+        footingActiveName: [0, 1, 2, 3, 4, 5],
         items: [
             {
                 title: '站点实况',
@@ -37,20 +37,25 @@ var leftMenu = new Vue({
                 iconType: 'ios-at',
                 contentID: 'about'
             }
-        ],
-        // screenSizeSwitch
-        wideMode: false,
-        screenSizeSwitchTextWide: "展开",
-        BodyWidthWide: "100%",
-        contentNavWidthWide: "5%", // "60px",
-        contentBodyWidthWide: "95%",
-        screenSizeSwitchTextBak: "",
-        BodyWidthBak: "",
-        contentNavWidthBak: "",
-        contentBodyWidthBak: ""
+        ]
     },
     conputed: {},
     methods: {
+        isPC: function () {
+            let userAgentInfo = navigator.userAgent;
+            let Agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPod"];
+            let flag = true;
+            for (let v = 0; v < Agents.length; v++) {
+                if (userAgentInfo.indexOf(Agents[v]) > 0) {
+                    flag = false;
+                    break;
+                }
+            }
+            if(window.screen.width>=768){
+                 flag = true;
+            }
+            return flag;
+        },
         updateHiddenState: function(onSelectName){
             document.getElementById(this.items[this.activeName].contentID).hidden = true;
             document.getElementById(this.items[onSelectName].contentID).hidden = false;
@@ -63,38 +68,12 @@ var leftMenu = new Vue({
                 }
             }
             document.getElementById("footing").hidden = footingHiddenFlag;
-        },
-        switchScreenSize: function(){
-            if(this.wideMode){
-                for(var i = 0; i < this.items.length; i++){
-                    this.items[i]['title'] = this.items[i]['titleBak'];
-                }
-                document.getElementById("contentBody").style.width = this.contentBodyWidthBak;
-                document.getElementById("screenSizeSwitch").innerText = this.screenSizeSwitchTextBak;
-                document.getElementById("container").style.width = this.BodyWidthBak;
-                document.getElementById("contentNav").style.width = this.contentNavWidthBak;
-                this.wideMode = false;
-            }
-            else{
-                for(var i = 0; i < this.items.length; i++){
-                    this.items[i]['title'] = "";
-                }
-                document.getElementById("screenSizeSwitch").innerText = this.screenSizeSwitchTextWide;
-                document.getElementById("container").style.width = this.BodyWidthWide;
-                document.getElementById("contentNav").style.width = this.contentNavWidthWide;
-                document.getElementById("contentBody").style.width = this.contentBodyWidthWide;
-                this.wideMode = true;
-            }
         }
     },
     created: function(){
         document.getElementById(this.items[this.activeName].contentID).hidden = false;
-        for(var i = 0; i < this.items.length; i++){
+        for(let i = 0; i < this.items.length; i++){
             this.items[i]['titleBak'] = this.items[i]['title'];
         }
-        this.BodyWidthBak = document.getElementById("container").style.width;
-        this.contentNavWidthBak = document.getElementById("contentNav").style.width;
-        this.contentBodyWidthBak = document.getElementById("contentBody").style.width;
-        this.screenSizeSwitchTextBak = document.getElementById("screenSizeSwitch").innerText;
     }
 });

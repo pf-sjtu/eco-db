@@ -125,7 +125,7 @@ def auto_download_period(station_no, datetime_beg, datetime_end, max_data_int, v
     download_step(station_no, datetime_beg, datetime_end, verbose)
 
 def auto_download(db, datetime_beg = datetime.datetime(2020, 1, 1), 
-                  int_min = 5, max_data_int = datetime.timedelta(days=7), 
+                  int_min = 1, max_data_int = datetime.timedelta(days=7), 
                   verbose = False):
     print('正在自动更新数据库数据，时间间隔：每{}分钟...'.format(int_min))
     # check empty
@@ -145,6 +145,7 @@ def auto_download(db, datetime_beg = datetime.datetime(2020, 1, 1),
             datetime_now = datetime.datetime.now()
             if datetime_now > datetime_last:
                 auto_download_period(station_no, datetime_last, datetime_now, max_data_int, verbose = verbose)
+        datetime_now = datetime.datetime.now()
         print('本次同步完成（{}->{}），休眠{}分钟。'.format(datetime_beg.strftime("%Y/%m/%d-%H:%M:%S"),
                                               datetime_now.strftime("%Y/%m/%d-%H:%M:%S"),
                                               int_min))

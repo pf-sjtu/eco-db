@@ -1,4 +1,4 @@
-var dataDownloadingBox = new Vue({
+let dataDownloadingBox = new Vue({
     el: "#dataDownloadingBox",
     data: {
         stations: [{station_name2: "错误"}],
@@ -37,7 +37,7 @@ var dataDownloadingBox = new Vue({
                     this.csvInfo[stationKey].dtEndStr = this.csvInfo[stationKey].dtEnd.Format("yyyy-MM-dd hh:mm");
 
                     stationTb = this.stations[this.stationNoSelected[stationKey]]['db_table_name'];
-                    link = "../php/qGETcolNames.php?table_name=" + stationTb + "&rand=" + rand4;
+                    link = "../php/qGET.php?q=SELECT en_name AS title, db_name AS `key` FROM col_info WHERE station" + this.stationNoSelected[stationKey] + "=1";
                     link2 = "../php/qGET.php?q=SELECT * FROM " + stationTb + " WHERE datetime >= '" + this.dtBegStr + "' AND datetime <= '" + this.dtEndStr + "'" + "&dtype=num";
                     
                     xhr[stationKey] = new XMLHttpRequest();
@@ -120,8 +120,8 @@ var dataDownloadingBox = new Vue({
     },
     created: function(){
         this.dtEndStr = new Date().Format("yyyy-MM-ddThh:mm");
-        var tsBeg = Date.parse(new Date()) - 24 * 3600 * 1000;
-        var dtBeg = new Date()
+        let tsBeg = Date.parse(new Date()) - 24 * 3600 * 1000;
+        let dtBeg = new Date()
         dtBeg.setTime(tsBeg);
         this.dtBegStr = dtBeg.Format("yyyy-MM-ddThh:mm");
     }

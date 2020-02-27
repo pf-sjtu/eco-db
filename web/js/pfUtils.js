@@ -1,5 +1,5 @@
 Date.prototype.Format = function (fmt) { //author: meizz 
-    var o = {
+    let o = {
         "M+": this.getMonth() + 1, //月份 
         "d+": this.getDate(), //日 
         "h+": this.getHours(), //小时 
@@ -9,7 +9,7 @@ Date.prototype.Format = function (fmt) { //author: meizz
         "S": this.getMilliseconds() //毫秒 
     };
     if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-    for (var k in o)
+    for (let k in o)
     if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
     return fmt;
 }
@@ -22,8 +22,8 @@ function rDigit(digit){
 // @param arr { Array } 原始数据
 // @return ret { Array } 返回值
 function getParamValues(name, arr) {
-    var ret = [];
-    for (var i = 0, len = arr.length; i < len; i++) {
+    let ret = [];
+    for (let i = 0, len = arr.length; i < len; i++) {
         ret.push(arr[i][name]);
     }
     return ret;
@@ -34,12 +34,12 @@ function getParamValues(name, arr) {
 // @param arr { Array } 原始数据
 function createParamValues(name, value, arr) {
     if (value.length == arr.length){
-        for (var i = 0, len = arr.length; i < len; i++) {
+        for (let i = 0, len = arr.length; i < len; i++) {
             arr[i][name] = value[i];
         }
     }
     else{
-        for (var i = 0, len = arr.length; i < len; i++) {
+        for (let i = 0, len = arr.length; i < len; i++) {
             arr[i][name] = value;
         }
     }
@@ -47,11 +47,11 @@ function createParamValues(name, value, arr) {
 }
 
 function qGET(q = "SELECT * FROM station_info", dtype = ""){
-    var xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
     xhr.open("GET", "../php/qGET.php?q=" + q + "&dtype=" + dtype, true);
     xhr.onload = function(){
         if (this.status == 200){
-            var result = JSON.parse(this.responseText);
+            let result = JSON.parse(this.responseText);
             console.log(result);
         }
     }
@@ -166,8 +166,8 @@ function nDimOption(dim, optionArray){
 
 function genCmpFunc(key){
     comKey = function(a, b){
-        var x = a[key];
-        var y = b[key];
+        let x = a[key];
+        let y = b[key];
         if (x < y) {return -1;}
         if (x > y) {return 1;}
         return 0;
@@ -177,11 +177,11 @@ function genCmpFunc(key){
 
 function downFile(content, filename) {
     // 创建隐藏的可下载链接
-    var eleLink = document.createElement('a');
+    let eleLink = document.createElement('a');
     eleLink.download = filename;
     eleLink.style.display = 'none';
     // 字符内容转变成blob地址
-    var blob = new Blob([content]);
+    let blob = new Blob([content]);
     eleLink.href = URL.createObjectURL(blob);
     // 触发点击
     document.body.appendChild(eleLink);
@@ -191,10 +191,10 @@ function downFile(content, filename) {
 };
 
 function isPC() {
-    var userAgentInfo = navigator.userAgent;
-    var Agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPod"];
-    var flag = true;
-    for (var v = 0; v < Agents.length; v++) {
+    let userAgentInfo = navigator.userAgent;
+    let Agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPod"];
+    let flag = true;
+    for (let v = 0; v < Agents.length; v++) {
         if (userAgentInfo.indexOf(Agents[v]) > 0) {
             flag = false;
             break;

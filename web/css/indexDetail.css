@@ -1,23 +1,18 @@
-/* About */
-h2{
-    margin-top: 50px;
+/* Live */
+#liveCard{
+    margin: 0 auto;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
 }
-.paragraph p{
-    text-indent: 2em;
+.floatCard{
+    width: 22rem;
+    padding: 1rem;
+    float: left;
+}
+.liveCardContent{
+    font-size: 0.9rem;
 }
 
-/* Index */
-#screenSizeSwitchGroup{
-    text-align: center; 
-    color: #00aaff;
-}
-
-/* History Tab */
-.searchBox{
-    padding-top: 2%;
-    padding-bottom: 2%;
-    text-align: center;
-}
 
 /* History Graph */
 #graphDataSearchBox{
@@ -30,20 +25,50 @@ h2{
 } 
 .bold{
     font-weight: bold;
+    text-align: right;
 }
-.fixedHeight{
-    height: 35px;
+.center{
+    text-align: center;
 }
-.fixedHeight2{
-    height: 45px;
+.button{
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
+    margin: 0.2rem;
+    background-color: rgba(67, 173, 243, 0.5);
+    color: black;
+    border: 0;
+    border-radius: 0.3rem;
+}
+.box{
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
 }
 
-/* Live */
-.floatCard{
-    width: 400px;
-    float: left;
-    padding: 20px;
+
+/* History Tab */
+.searchBox{
+    padding-top: 2%;
+    padding-bottom: 2%;
 }
-.liveCardContent{
-    font-size: small;
+
+
+/* About */
+h2{
+    font-weight: lighter;
+    margin-top: 2rem;
+    border-bottom: 1px solid rgb(225, 228, 238);
+    margin-bottom: 1rem;
+}
+.paragraph p{
+    text-indent: 2em;
+    padding-bottom: 0.2rem;
+}
+.paragraph a{
+    font-size: 0.7rem;
+}
+.paragraph span{
+    font-size: 0.7rem;
+    font-weight: lighter;
 }

@@ -1,4 +1,4 @@
-var graphDataSearchBox = new Vue({
+let graphDataSearchBox = new Vue({
     el: "#graphDataSearchBox",
     data: {
         dtBegStr: "",
@@ -16,6 +16,8 @@ var graphDataSearchBox = new Vue({
         graphOption: {},
         graphFrameID: "graphFrame",
         graphSmooth: false,
+        colMenuOpen: false,
+        colMenuWidth: "90",
         colSets: [
             {
                 title: "清空",
@@ -74,27 +76,6 @@ var graphDataSearchBox = new Vue({
         }
     },
     methods: {
-        getColNames: function(){
-            let stationTb, link, colNames;
-            let xhr = [];
-            for(let stationNo = 0, stationNum = this.stations.length; stationNo < stationNum; stationNo++){
-                stationTb = this.stations[stationNo]['db_table_name'];
-                link = "../php/qGETcolNames.php?table_name=" + stationTb + "&rand=" + rand4;
-                xhr[stationNo] = new XMLHttpRequest();
-                xhr[stationNo].open("GET", link, true);
-                xhr[stationNo].onload = function(){
-                    if (this.status == 200){
-                        colNames = JSON.parse(this.responseText);
-                        if(colNames['phpErrorCode'] != undefined){
-                            console.log("phpErrorCode", colNames['phpErrorCode']);
-                            colNames = [];
-                        }
-                        graphDataSearchBox.colNames[stationNo] = colNames;
-                    }
-                }
-                xhr[stationNo].send();
-            }
-        },
         getDataSimplified: function(async = true){
             let pointNum = settingProp.pointNum;
             let stationTb, link, data;
@@ -209,9 +190,9 @@ var graphDataSearchBox = new Vue({
                     data: legend
                 },
                 grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
+                    // left: '3%',
+                    // right: '4%',
+                    // bottom: '3%',
                     containLabel: true
                 },
                 toolbox: {
@@ -234,8 +215,8 @@ var graphDataSearchBox = new Vue({
             // console.log("option", option);
             // console.log("optionStr", JSON.stringify(option));
 
-            var dom = document.getElementById(this.graphFrameID);
-            var myChart = echarts.init(dom);
+            let dom = document.getElementById(this.graphFrameID);
+            let myChart = echarts.init(dom);
             if (option && typeof option === "object") {
                 myChart.setOption(option, true);
             }
@@ -251,52 +232,9 @@ var graphDataSearchBox = new Vue({
     },
     created: function(){
         this.dtEndStr = new Date().Format("yyyy-MM-ddThh:mm");
-        var tsBeg = Date.parse(new Date()) - 24 * 3600 * 1000;
-        var dtBeg = new Date()
+        let tsBeg = Date.parse(new Date()) - 24 * 3600 * 1000;
+        let dtBeg = new Date()
         dtBeg.setTime(tsBeg);
         this.dtBegStr = dtBeg.Format("yyyy-MM-ddThh:mm");
     }
 })
-
-
-function querySimplified(){
-    // targetTab.loading = true;
-    var selectedStationNo = dataSearchBox.stationNo;
-    var dtBegStr = dataSearchBox.dtBegStr;
-    var dtEndStr = dataSearchBox.dtEndStr;
-    var selectedStationTb = dataSearchBox.stations[selectedStationNo]["db_table_name"];
-    var colNames, data;
-    var xhr = new XMLHttpRequest();
-    // col names
-    xhr.open("GET", "../php/qGETcolNames.php?table_name=" + selectedStationTb + "&rand=" + rand4, true);
-    xhr.onload = function(){
-        if (this.status == 200){
-            colNames = JSON.parse(this.responseText);
-            createParamValues('width', '85px', colNames);
-            createParamValues('sortable', 'true', colNames);
-            colNames[0]['width'] = '150px';
-            colNames[0]['fixed'] = 'left';
-            targetTab.columns = colNames;
-        }
-    }
-    xhr.send();
-    // col values
-    var xhr2 = new XMLHttpRequest();
-    var q = "SELECT * FROM " + selectedStationTb + " WHERE datetime >= '" + dtBegStr + "' AND datetime <= '" + dtEndStr + "'";
-    xhr2.open("GET", "../php/qGET.php?q=" + q, true);
-    xhr2.onload = function(){
-        if (this.status == 200){
-                data = JSON.parse(this.responseText);
-                if(data['phpErrorCode'] == undefined){
-                    targetTab.tableData = data;
-                }
-                else{
-                    console.log("phpErrorCode", data['phpErrorCode']);
-                    targetTab.tableData = [];
-                    targetTab.columns = [];
-                }
-                targetTab.loading = false;
-            }
-        }
-    xhr2.send();
-}

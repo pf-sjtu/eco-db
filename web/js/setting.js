@@ -1,4 +1,4 @@
-var settingProp = new Vue({
+let settingProp = new Vue({
     el: "#settingProp",
     data: {
         pointNum: 30,

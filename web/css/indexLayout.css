@@ -1,63 +1,75 @@
-/* Main */
-h1{
-    font-size: 20px;
-    font-style: italic;
-    font-weight: bold;
-    line-height: 20px;
+/* 进度条 */
+#loadingProgress{
+    height: 28rem;
+    text-align: center;
+    padding-top: 20%;
+    padding-bottom: 20%;
 }
-h1 i{
-    font-size: medium;
-    font-weight: normal;
-    color: #424242;
+.loadingItem{
+    font-size: 1.2rem;
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+    font-weight: 500;
+    line-height: 2rem;
 }
-h1 p{
-    font-style: normal;
-}
+
+
+/* 整体 */
 body{
     margin: 0px;
 }
 #container{
-    width: 1000px;
-    height: 1000px;
+    width: 100%;
+    height: 40rem;
     margin: 0 auto;
 }
-#heading{
+
+
+/* 上导航栏 */
+#topNav{
+    height: auto;
     width: 100%;
-    height: 15%;
-    border-bottom: solid #ccd3db 3px;
-    padding-top: 3%;
+    margin-left: 0;
+    padding-left: 0;
+    position: fixed;
+    top: 0;
+    z-index: 100;
 }
 #headingName{
     width: 100%;
-    height: 100%;
+    background:rgb(67, 173, 243);
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
     float: left;
-    padding-left: 5%;
 }
+#title{
+    text-align: right;
+    font-style: italic;
+    font-weight: bold;
+    padding-right: 2rem;
+    color: white;
+}
+#title span{
+    font-weight: normal;
+    color:rgba(0, 0, 0, 0.7);
+}
+
+
+/* 内容 */
 #content{
-    height: 95%;
-    padding-top: 3%;
     clear: both;
 }
-#contentNav{
-    width: 16%;
-    height: 100%;
-    float: left;
-}
-#contentBody{
-    width: 84%;
-    height: 100%;
-    padding-left: 2%;
-    padding-right: 2%;
-    float: left;
-}
+
+
+/* 页脚 */
 #footing{
     width: 100%;
     height: 7%;
-    /* background-color:#c8c7c5; */
     clear: both;
     text-align: center;
     padding-top: 1%;
     padding-bottom: 1%;
+    margin-top: 3rem;
 }
 #footingInfo{
     margin-left: 10%;
@@ -67,7 +79,7 @@ body{
     border-top: solid #ccd3db 1px;
 }
 #footingInfo a{
-    font-size: small;
-    color:black;
+    font-size: 0.7rem;
+    color:rgba(0, 0, 0, 0.7);
     text-decoration: none;
 }

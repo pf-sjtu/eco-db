@@ -1,23 +1,39 @@
 <div id="dataSearchBox" class="searchBox">
-    <Row class="fixedHeight" type="flex" justify="start">
-        <i-col span="9">
-            <label class="bold" for="stationOptions">观测站</label>
-            <select id="stationOptions" v-model="stationName" required>
-                <option v-for="station in stations">
-                    {{ station.station_name2 }}
-                </option>
-            </select>
-        </i-col>
-        <i-col span="7">
-            <label class="bold" for="dtBeg">起始</label>
-            <input type="datetime-local" id="dtBeg" v-model="dtBegStr" required/>
-        </i-col>
-        <i-col span="7">
-            <label class="bold" for="dtEnd">结束</label>
-            <input type="datetime-local" id="dtEnd" v-model="dtEndStr" required/>
-        </i-col>
-        <i-col span="1">
-            <button onclick="queryDetailLimited()" :disabled="dataReady">查询</button>
+    <div class="box">
+        <Row type="flex" justify="start">
+            <i-col :xs="{span:4}" :lg="{span:2}" class="bold">
+                <p>区间</p>
+            </i-col>
+            <i-col span="19" offset="1">
+                <label for="dtBeg">起始</label>
+                <input type="datetime-local" id="dtBeg" v-model="dtBegStr" required/>
+            </i-col>
+        </Row>
+        <Row type="flex" justify="start">
+            <i-col :xs="{offset:5}" :lg="{offset:3}" span="20">
+                <label for="dtEnd">结束</label>
+                <input type="datetime-local" id="dtEnd" v-model="dtEndStr" required/>
+            </i-col>
+        </Row>
+    </div>
+    <div class="box">
+        <Row type="flex" justify="start">
+            <i-col :xs="{span:4}" :lg="{span:2}" class="bold">
+                <p>观测站</p>
+            </i-col>
+            <i-col span="19" offset="1">
+                <label for="stationOptions">站点</label>
+                <select id="stationOptions" v-model="stationName" required>
+                    <option v-for="station in stations">
+                        {{ station.station_name2 }}
+                    </option>
+                </select>
+            </i-col>
+        </Row>
+    </div>
+    <Row type="flex" justify="start">
+        <i-col span="24">
+            <Divider dashed><button onclick="queryDetailLimited()" :disabled="dataReady" class="button">查询</button></Divider>
         </i-col>
     </Row>
 </div>

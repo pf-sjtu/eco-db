@@ -1,0 +1,29 @@
+#menuButton{
+    color: white;
+    background: rgba(0, 0, 0, 0);
+    border: 0;
+    outline-width: 0;
+    width: 2rem;
+    font-size: 1rem;
+    float: left;
+}
+#title{
+    font-size: 1rem;
+    float: right;
+}
+#title span{
+    font-size: 0.8rem;
+}
+#heading{
+    height: 3em;
+    width: 100%;
+    border-bottom: solid #ccd3db 3px;
+    clear: both;
+}
+
+#contentBody{
+    width: 100%;
+    height: 100%;
+    padding-left: 2%;
+    padding-right: 2%;
+}

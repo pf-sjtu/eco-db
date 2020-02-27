@@ -1,6 +1,6 @@
-var rand4 = rDigit(4);
+let rand4 = rDigit(4);
 
-var dataSearchBox = new Vue({
+let dataSearchBox = new Vue({
     el: "#dataSearchBox",
     data: {
         stations: [{station_name2: "错误"}],
@@ -11,7 +11,7 @@ var dataSearchBox = new Vue({
     },
     computed: {
         stationNo: function(){
-            for(var i = 0; i < this.stations.length; i++){
+            for(let i = 0; i < this.stations.length; i++){
                 if(this.stationName == this.stations[i]['station_name2']){
                     return i;
                 }
@@ -29,14 +29,14 @@ var dataSearchBox = new Vue({
     },
     created: function(){
         this.dtEndStr = new Date().Format("yyyy-MM-ddThh:mm");
-        var tsBeg = Date.parse(new Date()) - 3 * 3600 * 1000;
-        var dtBeg = new Date()
+        let tsBeg = Date.parse(new Date()) - 3 * 3600 * 1000;
+        let dtBeg = new Date()
         dtBeg.setTime(tsBeg);
         this.dtBegStr = dtBeg.Format("yyyy-MM-ddThh:mm");
     }
 })
 
-var dataTab = new Vue({
+let dataTab = new Vue({
     el: "#dataTab",
     data: {
         columns: [],
@@ -49,15 +49,15 @@ var dataTab = new Vue({
 })
 
 function queryDetailLimited(){
-    var dtBeg = new Date(dataSearchBox.dtBegStr);
-    var dtEnd = new Date(dataSearchBox.dtEndStr);
-    var dtNow = new Date();
+    let dtBeg = new Date(dataSearchBox.dtBegStr);
+    let dtEnd = new Date(dataSearchBox.dtEndStr);
+    let dtNow = new Date();
     if(dtEnd > dtNow){
         dtEnd = dtNow;
         dataSearchBox.dtEndStr = dtEnd.Format("yyyy-MM-ddThh:mm");
     }
-    var tsBeg = Date.parse(dtBeg);
-    var tsBegMin = Date.parse(dtEnd) - settingProp.dataHour * 3600 * 1000;
+    let tsBeg = Date.parse(dtBeg);
+    let tsBegMin = Date.parse(dtEnd) - settingProp.dataHour * 3600 * 1000;
     if(tsBegMin > tsBeg){
         dtBeg.setTime(tsBegMin)
         dataSearchBox.dtBegStr = dtBeg.Format("yyyy-MM-ddThh:mm");
@@ -71,13 +71,14 @@ function queryDetailLimited(){
 
 function queryDetail(targetTab){
     targetTab.loading = true;
-    var selectedStationNo = dataSearchBox.stationNo;
-    var dtBegStr = dataSearchBox.dtBegStr;
-    var dtEndStr = dataSearchBox.dtEndStr;
-    var selectedStationTb = dataSearchBox.stations[selectedStationNo]["db_table_name"];
-    var colNames, data;
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "../php/qGETcolNames.php?table_name=" + selectedStationTb + "&rand=" + rand4, true);
+    let selectedStationNo = dataSearchBox.stationNo;
+    let dtBegStr = dataSearchBox.dtBegStr;
+    let dtEndStr = dataSearchBox.dtEndStr;
+    let selectedStationTb = dataSearchBox.stations[selectedStationNo]["db_table_name"];
+    let colNames, data;
+    let xhr = new XMLHttpRequest();
+    
+    xhr.open("GET", "../php/qGET.php?q=SELECT en_name AS title, db_name AS `key` FROM col_info WHERE station" + selectedStationNo + "=1", true);
     xhr.onload = function(){
         if (this.status == 200){
             colNames = JSON.parse(this.responseText);
@@ -90,8 +91,8 @@ function queryDetail(targetTab){
     }
     xhr.send();
     // col values
-    var xhr2 = new XMLHttpRequest();
-    var q = "SELECT * FROM " + selectedStationTb + " WHERE datetime >= '" + dtBegStr + "' AND datetime <= '" + dtEndStr + "'";
+    let xhr2 = new XMLHttpRequest();
+    let q = "SELECT * FROM " + selectedStationTb + " WHERE datetime >= '" + dtBegStr + "' AND datetime <= '" + dtEndStr + "'";
     xhr2.open("GET", "../php/qGET.php?q=" + q, true);
     xhr2.onload = function(){
         if (this.status == 200){

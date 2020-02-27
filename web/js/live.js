@@ -1,4 +1,4 @@
-var liveCard = new Vue({
+let liveCard = new Vue({
     el: "#liveCard",
     data: {
         titleIconType: 'ios-home',
@@ -9,7 +9,6 @@ var liveCard = new Vue({
         lastLines: [],
         statusCounter: 0,
         emptyPlaceHolder: '--',
-        // jumpDetail: []
     },
     computed: {
         stationInfo: function(){
@@ -78,13 +77,12 @@ var liveCard = new Vue({
             }
         },
         getColNames: function(){
-            let stationTb, link;
+            let link;
             let xhr = [];
             let colNames = [];
             this.colNames = [];
             for(let stationNo = 0, stationNum = this.stations.length; stationNo < stationNum; stationNo++){
-                stationTb = this.stations[stationNo]['db_table_name'];
-                link = "../php/qGETcolNames.php?table_name=" + stationTb + "&rand=" + rand4;
+                link = "../php/qGET.php?q=SELECT en_name AS title, db_name AS `key` FROM col_info WHERE station" + stationNo + "=1";
                 xhr[stationNo] = new XMLHttpRequest();
                 xhr[stationNo].open("GET", link, true);
                 xhr[stationNo].onload = function(){
@@ -92,6 +90,7 @@ var liveCard = new Vue({
                         colNames = JSON.parse(this.responseText);
                         if(colNames['phpErrorCode'] == undefined){
                             liveCard.colNames[stationNo] = colNames;
+                            graphDataSearchBox.colNames[stationNo] = colNames;
                         }
                     }
                 }
@@ -105,23 +104,22 @@ var liveCard = new Vue({
             dtBegStr = tmp.join(':');
             dataSearchBox.dtBegStr = dtBegStr;
             dataSearchBox.dtEndStr = dtBegStr;
-            leftMenu.updateHiddenState(2);
+            topNav.updateHiddenState(2);
             queryDetailLimited();
         },
     },
     created: function(){
-        var q = "SELECT * FROM station_info";
-        var xhr = new XMLHttpRequest();
+        let q = "SELECT * FROM station_info";
+        let xhr = new XMLHttpRequest();
         xhr.open("GET", "../php/qGET.php?q=" + q, true);
         xhr.onload = function(){
             if (this.status == 200){
-                var stations = JSON.parse(this.responseText);
+                let stations = JSON.parse(this.responseText);
                 if(stations['phpErrorCode'] == undefined){
                     liveCard.stations = stations;
                     liveCard.refresh();
                     liveCard.getColNames();
                     graphDataSearchBox.stations = stations;
-                    graphDataSearchBox.getColNames();
                     dataSearchBox.stations = stations;
                     dataSearchBox.stationName = stations[0]['station_name2'];
                     dataDownloadingBox.stations = stations;
