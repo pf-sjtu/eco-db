@@ -1,5 +1,3 @@
-let rand4 = rDigit(4);
-
 let dataSearchBox = new Vue({
     el: "#dataSearchBox",
     data: {
@@ -7,7 +5,10 @@ let dataSearchBox = new Vue({
         stationName: "",
         dtBegStr: "",
         dtEndStr: "",
-        dataReady: false
+        dataReady: false,
+        colNames: [],
+        colLen: 0,
+        dataLen: 0
     },
     computed: {
         stationNo: function(){
@@ -19,6 +20,67 @@ let dataSearchBox = new Vue({
             return 0;
         }
     },
+    methods: {
+        isPC: isPC,
+        queryDetailLimited: function(){
+            let dtBeg = new Date(this.dtBegStr);
+            let dtEnd = new Date(this.dtEndStr);
+            let dtNow = new Date();
+            if(dtEnd > dtNow){
+                dtEnd = dtNow;
+                this.dtEndStr = dtEnd.Format("yyyy-MM-ddThh:mm");
+            }
+            let tsBeg = Date.parse(dtBeg);
+            let tsBegMin = Date.parse(dtEnd) - settingProp.dataHour * 3600 * 1000;
+            if(tsBegMin > tsBeg){
+                dtBeg.setTime(tsBegMin)
+                this.dtBegStr = dtBeg.Format("yyyy-MM-ddThh:mm");
+                alert("由于性能限制，查询的时间跨度应该在" + settingProp.dataHour + "小时以内，已将起始时间修正为" + this.dtBegStr);
+            }
+            else{
+                this.queryDetail(dataTab);
+                this.dataReady = true;
+            }
+        },
+        queryDetail: function(targetTab){
+            targetTab.loading = true;
+            
+            let columns = simpleDeepCopy(this.colNames[this.stationNo]);
+            for(let i = 0, len = columns.length; i < len; i++){
+                columns[i].width = '90px';
+                columns[i].sortable = true;
+                if(columns[i].unit.length){
+                    columns[i].title += " (" + columns[i].unit + ")";
+                }
+            }
+            // createParamValues('width', '85px', columns);
+            // createParamValues('sortable', 'true', columns);
+            columns[0]['width'] = '150px';
+            columns[0]['fixed'] = 'left';
+            targetTab.columns = columns;
+            
+            let data;
+            let xhr2 = new XMLHttpRequest();
+            let q = "SELECT * FROM " + this.stations[this.stationNo]["db_table_name"] + " WHERE datetime >= '" + this.dtBegStr + "' AND datetime <= '" + this.dtEndStr + "'";
+            xhr2.open("GET", "../php/qGET.php?q=" + q, true);
+            xhr2.onload = function(){
+                if (this.status == 200){
+                        data = JSON.parse(this.responseText);
+                        if(data['phpErrorCode'] == undefined){
+                            targetTab.tableData = data;
+                        }
+                        else{
+                            targetTab.tableData = [];
+                            targetTab.columns = [];
+                        }
+                        dataSearchBox.colLen = targetTab.columns.length;
+                        dataSearchBox.dataLen = targetTab.tableData.length;
+                        targetTab.loading = false;
+                    }
+                }
+            xhr2.send();
+        }
+    },
     watch: {
         dtBegStr: function(){
             this.dataReady = false;
@@ -28,11 +90,8 @@ let dataSearchBox = new Vue({
         }
     },
     created: function(){
+        this.dtBegStr = new Date().add(0, -3).Format("yyyy-MM-ddThh:mm");
         this.dtEndStr = new Date().Format("yyyy-MM-ddThh:mm");
-        let tsBeg = Date.parse(new Date()) - 3 * 3600 * 1000;
-        let dtBeg = new Date()
-        dtBeg.setTime(tsBeg);
-        this.dtBegStr = dtBeg.Format("yyyy-MM-ddThh:mm");
     }
 })
 
@@ -47,65 +106,3 @@ let dataTab = new Vue({
         size: "small"
     }
 })
-
-function queryDetailLimited(){
-    let dtBeg = new Date(dataSearchBox.dtBegStr);
-    let dtEnd = new Date(dataSearchBox.dtEndStr);
-    let dtNow = new Date();
-    if(dtEnd > dtNow){
-        dtEnd = dtNow;
-        dataSearchBox.dtEndStr = dtEnd.Format("yyyy-MM-ddThh:mm");
-    }
-    let tsBeg = Date.parse(dtBeg);
-    let tsBegMin = Date.parse(dtEnd) - settingProp.dataHour * 3600 * 1000;
-    if(tsBegMin > tsBeg){
-        dtBeg.setTime(tsBegMin)
-        dataSearchBox.dtBegStr = dtBeg.Format("yyyy-MM-ddThh:mm");
-        alert("由于性能限制，查询的时间跨度应该在" + settingProp.dataHour + "小时以内，已将起始时间修正为" + dataSearchBox.dtBegStr);
-    }
-    else{
-        queryDetail(dataTab);
-        dataSearchBox.dataReady = true;
-    }
-}
-
-function queryDetail(targetTab){
-    targetTab.loading = true;
-    let selectedStationNo = dataSearchBox.stationNo;
-    let dtBegStr = dataSearchBox.dtBegStr;
-    let dtEndStr = dataSearchBox.dtEndStr;
-    let selectedStationTb = dataSearchBox.stations[selectedStationNo]["db_table_name"];
-    let colNames, data;
-    let xhr = new XMLHttpRequest();
-    
-    xhr.open("GET", "../php/qGET.php?q=SELECT en_name AS title, db_name AS `key` FROM col_info WHERE station" + selectedStationNo + "=1", true);
-    xhr.onload = function(){
-        if (this.status == 200){
-            colNames = JSON.parse(this.responseText);
-            createParamValues('width', '85px', colNames);
-            createParamValues('sortable', 'true', colNames);
-            colNames[0]['width'] = '150px';
-            colNames[0]['fixed'] = 'left';
-            targetTab.columns = colNames;
-        }
-    }
-    xhr.send();
-    // col values
-    let xhr2 = new XMLHttpRequest();
-    let q = "SELECT * FROM " + selectedStationTb + " WHERE datetime >= '" + dtBegStr + "' AND datetime <= '" + dtEndStr + "'";
-    xhr2.open("GET", "../php/qGET.php?q=" + q, true);
-    xhr2.onload = function(){
-        if (this.status == 200){
-                data = JSON.parse(this.responseText);
-                if(data['phpErrorCode'] == undefined){
-                    targetTab.tableData = data;
-                }
-                else{
-                    targetTab.tableData = [];
-                    targetTab.columns = [];
-                }
-                targetTab.loading = false;
-            }
-        }
-    xhr2.send();
-}

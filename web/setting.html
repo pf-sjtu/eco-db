@@ -1,13 +1,24 @@
-<br/>
+<p class="divTitle">设置</p>
 <div id="settingProp">
     <div class="settingBox">
-        <label for="pointSlider">图最大数据点(个)</label>
-        <Slider id="pointSlider" v-model="pointNum" :min="pointNumMin" :max="pointNumMax" show-input></Slider>
+        <label for="pointSlider">数据图表 - 图最大数据点(个)</label>
+        <div class="slider">
+            <Slider id="pointSlider" v-model="pointNum" :min="pointNumMin" :max="pointNumMax" show-input></Slider>
+        </div>
     </div>
     <br />
     <div class="settingBox">
-        <label for="dataPeriod">查询的时间跨度(小时)</label>
-        <Slider id="dataPeriod" v-model="dataHour" :min="dataHourMin" :max="dataHourMax" show-input></Slider>
+        <label for="legendNumSlider">数据图表 - 图例滚动临界数(个)</label>
+        <div class="slider">
+            <Slider id="legendNumSlider" v-model="legendNum" :min="legendNumMin" :max="legendNumMax" show-input></Slider>
+        </div>
+    </div>
+    <br />
+    <div class="settingBox">
+        <label for="dataPeriod">数据条目 - 查询的时间跨度(小时)</label>
+        <div class="slider">
+            <Slider id="dataPeriod" v-model="dataHour" :min="dataHourMin" :max="dataHourMax" show-input></Slider>
+        </div>
     </div>
     <br />
     <div class="settingBox">

@@ -1,3 +1,4 @@
+// yyyy-MM-ddThh:mm:ss
 Date.prototype.Format = function (fmt) { //author: meizz 
     let o = {
         "M+": this.getMonth() + 1, //月份 
@@ -12,6 +13,12 @@ Date.prototype.Format = function (fmt) { //author: meizz
     for (let k in o)
     if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
     return fmt;
+}
+Date.prototype.add = function (d = 0, h = 0, m = 0, s = 0, ms = 0){
+    let ts = Date.parse(this) + ms + 1000*s + 1000*60*m + 1000*60*60*h + 1000*60*60*24*d;
+    let dt = new Date();
+    dt.setTime(ts);
+    return dt;
 }
 
 function rDigit(digit){

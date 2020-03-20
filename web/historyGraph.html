@@ -1,166 +1,191 @@
+<p class="divTitle">数据图表</p>
 <div id="graphDataSearchBox" class="searchBox">
-    <div class="box">
-        <Row type="flex" justify="start">
-            <i-col :xs="{span:4}" :lg="{span:2}" class="bold">
-                区间
-            </i-col>
-            <i-col span="19" offset="1">
-                <label for="dtGBeg">起始</label>
-                <input type="datetime-local" id="dtGBeg" v-model="dtBegStr" required/>
-            </i-col>
-        </Row>
-        <Row type="flex" justify="start">
-            <i-col :xs="{offset:5}" :lg="{offset:3}" span="20">
-                <label for="dtGEnd">结束</label>
-                <input type="datetime-local" id="dtGEnd" v-model="dtEndStr" required/>
-            </i-col>
-        </Row>
-    </div>
-    <div class="box">
-        <Row type="flex" justify="start">
-            <i-col :xs="{span:4}" :lg="{span:2}" class="bold">
-                站点
-            </i-col>
-            <i-col span="19" offset="1">
-                <Checkbox-Group v-model="selectedStations">
-                    <Checkbox v-for="(station, index) in stations"
-                    :key="index"
-                    :label="index">{{ station.station_name2 }}</Checkbox>
-                </Checkbox-Group>
-            </i-col>
-        </Row>
-    </div>
-    <div class="box" v-if="selectedStations.length">
-        <Row type="flex" justify="start">
-            <i-col :xs="{span:4}" :lg="{span:2}" class="bold">
-                筛选
-            </i-col>
-            <i-col :xs="{span:3}" :lg="{span:2}" offset="1">
-                <input type="radio" name="mode" value="0" v-model="setMode"/>并集
-            </i-col>
-            <i-col :xs="{span:3,offset:1}" :lg="{span:2}">
-                <input type="radio" name="mode" value="1" v-model="setMode"/>交集
-            </i-col>
-        </Row>
-    </div>
-    <div class="box" v-if="selectedStations.length">
-        <Row type="flex" justify="start">
-            <i-col :xs="{span:4}" :lg="{span:2}" class="bold">
-                数据列
-            </i-col>
-            <i-col span="19" offset="1">
+    <div class="graphBox1">
+        <div class="box">
+            <Row type="flex" justify="start">
+                <i-col :xs="{span:4}" :lg="{span:2}" class="bold">
+                    区间
+                </i-col>
+                <i-col span="19" offset="1">
+                    <label for="dtGBeg">起始</label>
+                    <input type="datetime-local" id="dtGBeg" class="fixedInput" v-model="dtBegStr" required/>
+                </i-col>
+            </Row>
+            <Row type="flex" justify="start">
+                <i-col :xs="{offset:5}" :lg="{offset:3}" span="20">
+                    <label for="dtGEnd">结束</label>
+                    <input type="datetime-local" id="dtGEnd" class="fixedInput" v-model="dtEndStr" required/>
+                </i-col>
+            </Row>
+        </div>
+        <div class="box">
+            <Row type="flex" justify="start">
+                <i-col :xs="{span:4}" :lg="{span:2}" class="bold">
+                    站点
+                </i-col>
+                <i-col span="19" offset="1">
+                    <Checkbox-Group v-model="selectedStations">
+                        <Checkbox v-for="(station, index) in stations"
+                        :key="index"
+                        :label="index">{{ station.station_name2 }}</Checkbox>
+                    </Checkbox-Group>
+                </i-col>
+            </Row>
+        </div>
+        <div :hidden="selectedStations.length==0">
+            <div class="box">
                 <Row type="flex" justify="start">
-                    <template v-for="colSet in colSets">
-                        <button @click="colKeySelected=colSet.set" class="button">{{ colSet.title }}</button>
-                    </template>
+                    <i-col :xs="{span:4}" :lg="{span:2}" class="bold">
+                        设置
+                    </i-col>
+                    <i-col span="7" offset="1">
+                        <input type="checkbox" v-model="graphSmooth">图线平滑</input>
+                    </i-col>
                 </Row>
+            </div>
+            <div class="box">
                 <Row type="flex" justify="start">
-                    <button @click="colMenuOpen=true" class="button"><Icon type="ios-menu"></Icon>自定义列</button>
-                    <Drawer title="自定义列" :closable="true" :width="colMenuWidth" v-model="colMenuOpen" placement="right">
-                        <div class="box">
-                            <Row type="flex" justify="start">
-                                <i-col>
-                                    筛选
-                                </i-col>
-                                <i-col :xs="{span:4}" :lg="{span:2}" offset="1">
-                                    <input type="radio" name="mode" value="0" v-model="setMode"/>并集
-                                </i-col>
-                                <i-col :xs="{span:4,offset:1}" :lg="{span:2}">
-                                    <input type="radio" name="mode" value="1" v-model="setMode"/>交集
-                                </i-col>
-                            </Row>
-                        </div>
-                        <div class="box">
-                            <Row type="flex" justify="start">
-                                <i-col>
-                                    预设集合
-                                </i-col>
-                            </Row>
-                            <Row type="flex" justify="start">
-                                <i-col offset="1">
+                    <i-col :xs="{span:4}" :lg="{span:2}" class="bold">
+                        数据
+                    </i-col>
+                    <i-col span="19" offset="1">
+                        <Row type="flex" justify="start">
+                            <template v-for="colSet in colSets">
+                                <button @click="colKeySelected=colSet.set" class="button">{{ colSet.title }}</button>
+                            </template>
+                            <button @click="colMenuOpen=true" class="button"><Icon type="ios-menu"></Icon>自定义列</button>
+                            <Drawer title="自定义列" :closable="true" :width="colMenuWidth" v-model="colMenuOpen" placement="right">
+                                <div class="box">
+                                    <p class="colMenuTitle">站点</p>
+                                    <Checkbox-Group v-model="selectedStations">
+                                        <Checkbox v-for="(station, index) in stations"
+                                        :key="index"
+                                        :label="index">{{ station.station_name2 }}</Checkbox>
+                                    </Checkbox-Group>
+                                </div>
+                                <div class="box">
+                                    <p class="colMenuTitle">筛选</p>
+                                    <input type="radio" id="menuSetMode0" name="menuSetMode" value="mode0" v-model="setMode"/>
+                                    <label for="menuSetMode0">并集</label>
+                                    <input type="radio" id="menuSetMode1" name="menuSetMode" value="mode1" v-model="setMode"/>
+                                    <label for="menuSetMode1">交集</label>
+                                </div>
+                                <div class="box">
+                                    <p class="colMenuTitle">预设集合</p>
                                     <template v-for="colSet in colSets">
                                         <button @click="colKeySelected=colSet.set" class="button">{{ colSet.title }}</button>
                                     </template>
-                                </i-col>
-                            </Row>
-                        </div>
-                        <div class="box">
-                            <Row type="flex" justify="start">
-                                <i-col>
-                                    自定义
-                                </i-col>
-                            </Row>
-                            <Checkbox-Group v-model="colKeySelected">
-                                <Checkbox v-for="(col, index) in colDisplayArr"
-                                :key="index"
-                                :label="col.key">{{ col.title }}&nbsp;&nbsp;</Checkbox>
-                            </Checkbox-Group>
-                        </div>
-                    </Drawer>
+                                </div>
+                                <div class="box">
+                                    <p class="colMenuTitle">自定义</p>
+                                    <Checkbox-Group class="tight" v-model="colKeySelected">
+                                        <Checkbox v-for="(col, index) in colDisplayArr"
+                                        :key="index"
+                                        :label="col.key">{{ col.title }}&nbsp;&nbsp;</Checkbox>
+                                    </Checkbox-Group>
+                                </div>
+                            </Drawer>
+                        </Row>
+                    </i-col>
                 </Row>
-            </i-col>
-        </Row>
+            </div>
+        </div>
     </div>
-    <Row type="flex" justify="center" v-if="selectedStations.length">
-        <i-col span="20">
-            <Divider dashed></Divider>
-        </i-col>
-    </Row>
-    <div class="box" v-if="selectedStations.length">
+    <!-- <div class="box graphBox2" :hidden="selectedStations.length==0">
         <Row type="flex" justify="start">
             <i-col :xs="{span:4}" :lg="{span:2}" class="bold">
-                项目
-            </i-col>
-            <i-col :xs="{span:0}" :lg="{span:15,offset:2}">
-                项目名
-            </i-col>
-            <i-col :xs="{offset:15}" :lg="{offset:0}" span="2" class="center">
-                x轴
-            </i-col>
-            <!-- <i-col span="5" class="center">
-                范围
-            </i-col> -->
-            <i-col span="3" class="center">
-                倍数
-            </i-col>
-        </Row>
-    </div>
-    <div class="box" v-if="selectedStations.length">
-        <Row type="flex" justify="center"  v-for="(col, colIndex) in colSelected" :key="colIndex">
-            <i-col :xs="{span:0}" :lg="{span:2}"></i-col>
-            <i-col :xs="{span:19}" :lg="{span:15,offset:2}">
-                {{ col.title }}
-            </i-col>
-            <i-col span="2" class="center">
-                <input type="radio" name="xAxis" :value="colIndex" v-model="xAxis"/>
-            </i-col>
-            <!-- <i-col span="5" class="center">
-                范围
-            </i-col> -->
-            <i-col span="3" class="center">
-                <input type="text" style="width: 100%;" v-model="colRate[colIndex]" :placeholder="defaultColRate" :disabled="xAxis==colIndex"/>
-            </i-col>
-        </Row>
-    </div>
-    <div class="box" v-if="selectedStations.length">
+                    项目
+                </i-col>
+                <i-col :xs="{span:0}" :lg="{span:10,offset:2}">
+                    项目名
+                </i-col>
+                <i-col :xs="{offset:8}" :lg="{offset:0}" span="2" class="center">
+                    x轴
+                </i-col>
+                <i-col :xs="{span:7}" :lg="{span:5}" class="center" v-if="Object.keys(dataSpan).length">
+                    范围
+                </i-col>
+                <i-col span="3" class="center">
+                    倍数
+                </i-col>
+            </Row>
+            <Row type="flex" justify="start"  v-for="(col, colIndex) in colSelected" :key="colIndex">
+                <i-col :xs="{span:1}" :lg="{span:2}"></i-col>
+                <i-col :xs="{span:11}" :lg="{span:10,offset:2}">
+                    {{ col.title }}
+                </i-col>
+                <i-col span="2" class="center">
+                    <input type="radio" name="xAxis" :value="colIndex" v-model="xAxis"/>
+                </i-col>
+                <i-col :xs="{span:7}" :lg="{span:5}" class="center" v-if="Object.keys(dataSpan).length">
+                    <Row v-if="dataSpan[col.key]!=undefined && col.key != 'datetime'" type="flex" justify="center">
+                        <i-col span="11" class="alignRight">
+                            {{ dataSpan[col.key].min }}
+                        </i-col>
+                        <i-col span="2">
+                            ~
+                        </i-col>
+                        <i-col span="11" class="alignLeft">
+                            {{ dataSpan[col.key].max }}
+                        </i-col>
+                    </Row>
+                </i-col>
+                <i-col span="3" class="center">
+                    <input type="text" class="fixedInput ratioBox" v-model="colRate[colIndex]" :placeholder="defaultColRate" :disabled="xAxis==colIndex"/>
+                </i-col>
+            </Row>
+    </div> -->
+    <div class="box graphBox2" :hidden="selectedStations.length==0">
         <Row type="flex" justify="start">
-            <i-col :xs="{span:4}" :lg="{span:2}" class="bold">
-                设置
-            </i-col>
-            <i-col span="7" offset="1">
-                <input type="checkbox" v-model="graphSmooth">图线平滑</input>
+            <i-col span="4" class="bold">
+                    项目
+                </i-col>
+                <i-col offset="8" span="2" class="center">
+                    x轴
+                </i-col>
+                <i-col span="7" class="center" v-if="Object.keys(dataSpan).length">
+                    范围
+                </i-col>
+                <i-col span="3" class="center">
+                    倍数
+                </i-col>
+            </Row>
+            <Row type="flex" justify="start"  v-for="(col, colIndex) in colSelected" :key="colIndex">
+                <i-col span="1"></i-col>
+                <i-col span="11">
+                    {{ col.title }}
+                </i-col>
+                <i-col span="2" class="center">
+                    <input type="radio" name="xAxis" :value="colIndex" v-model="xAxis"/>
+                </i-col>
+                <i-col span="7" class="center" v-if="Object.keys(dataSpan).length">
+                    <Row v-if="dataSpan[col.key]!=undefined && col.key != 'datetime'" type="flex" justify="center">
+                        <i-col span="11" class="alignRight">
+                            {{ dataSpan[col.key].min }}
+                        </i-col>
+                        <i-col span="2">
+                            ~
+                        </i-col>
+                        <i-col span="11" class="alignLeft">
+                            {{ dataSpan[col.key].max }}
+                        </i-col>
+                    </Row>
+                </i-col>
+                <i-col span="3" class="center">
+                    <input type="text" class="fixedInput ratioBox" v-model="colRate[colIndex]" :placeholder="defaultColRate" :disabled="xAxis==colIndex"/>
+                </i-col>
+            </Row>
+    </div>
+    <div class="box graphBox3" :hidden="selectedStations.length==0">
+        <Row type="flex" justify="center">
+            <i-col span="20">
+                <!-- <Divider dashed></Divider> -->
             </i-col>
         </Row>
         <Row type="flex" justify="center">
-            <button @click="updateGraph" :disabled="colKeySelected.length<2" class="button">生成</button>
+            <p :hidden="graphReady" class="warning">图像数据为空或未生成</p>
         </Row>
     </div>
-
-    <Row type="flex" justify="center" v-if="selectedStations.length">
-        <i-col span="20">
-            <Divider dashed></Divider>
-        </i-col>
-    </Row>
     <Row type="flex" justify="center">
         <div id="graphFrame"></div>
     </Row>

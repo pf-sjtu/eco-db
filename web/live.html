@@ -1,6 +1,7 @@
+<p class="divTitle">站点实况</p>
 <div id="liveCard">
     <template v-for="(info, index) in stationInfo">
-    <div class="floatCard">
+        <div class="floatCard">
             <Card :key="index">
                 <p slot="title">
                     <Icon :type="titleIconType"></Icon>
@@ -12,23 +13,23 @@
                 </a>
                 <div class="liveCardContent">
                     <Row type="flex" justify="center">
-                        <i-col span="8">最新数据</i-col>
-                        <i-col span="12">{{ info.dtEndStr }}</i-col>
+                        <i-col span="8" class="title">最新数据</i-col>
+                        <i-col span="12" class="currentTime">{{ info.dtEndStr }}</i-col>
                     </Row>
                     <Row type="flex" justify="center">
-                        <i-col span="8">最早数据</i-col>
+                        <i-col span="8" class="title">最早数据</i-col>
                         <i-col span="12">{{ info.dtBegStr }}</i-col>
                     </Row>
                     <Divider dashed>实时数据</Divider>
                     <Row  v-for="(item, itemIndex) in info.lastData" :key="index + '-' + itemIndex" type="flex" justify="center">
-                        <i-col span="8">{{ item.title }}</i-col>
-                        <i-col span="12">{{ item.data }}</i-col>
+                        <i-col span="8" class="title">{{ item.title }}</i-col>
+                        <i-col span="12"><span class="data">{{ item.data }}</span><span class="unit"> {{ item.unit }}</span></i-col>
                     </Row>
                     <Divider dashed><a href="#" @click.prevent="jumpDetail(info.title, info.dtBegStr)">详细条目</a></Divider>
                 </div>
             </Card>
         </div>
     </template>
+    <p class="liveCardEnd"></p>
 </div>
-
 <script type="text/javascript" src="js/live.js"></script>
