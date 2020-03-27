@@ -1,24 +1,23 @@
 /* Live */
-.liveCardContent{
+.liveCardContent {
     font-size: 0.9rem;
 }
-#liveCard .title{
+#liveCard .title {
     font-weight: 600;
 }
-#liveCard .currentTime{
+#liveCard .currentTime {
     color: rgba(67, 173, 243, 1);
     font-weight: 600;
 }
-#liveCard .data{
+#liveCard .data {
     font-weight: 500;
 }
-#liveCard .unit{
+#liveCard .unit {
     font-size: 0.8rem;
 }
 
-
 /* History Graph */
-.bold{
+.bold {
     font-size: 1.1rem;
     font-weight: 500;
     text-align: right;
@@ -27,94 +26,98 @@
     font-weight: bold;
     text-align: right;
 } */
-.center{
+.center {
     text-align: center;
 }
-.button{
+.button {
     margin: 0.2rem;
     background-color: rgba(67, 173, 243, 0.5);
     color: black;
 }
-.box{
+.box {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
 }
-.warning{
+.warning {
     font-size: 0.8rem;
-    color: orangered;
+    color: rgb(87, 87, 87);
+    /* color: orangered; */
 }
-.alignLeft{
+.alignLeft {
     text-align: left;
 }
-.alignRight{
+.alignRight {
     text-align: right;
 }
 
-
 /* About */
-h2{
+h2 {
     font-weight: lighter;
     margin-top: 2rem;
     border-bottom: 1px solid rgb(225, 228, 238);
     margin-bottom: 1rem;
 }
-.paragraph{
-    padding: 0 0.5rem 0 0.5rem
+.paragraph {
+    padding: 0 0.5rem 0 0.5rem;
 }
-.paragraph p{
+.paragraph p {
     text-indent: 2em;
     padding-bottom: 0.2rem;
 }
-.smallHref{
+.smallHref {
     font-size: 0.7rem;
 }
-.paragraph ul{
+.paragraph ul {
     /* padding-left: 2rem; */
     list-style-type: none;
 }
-.update, .updateLast{
+.update,
+.updateLast {
     margin: 0.5rem 0;
     padding: 0.1rem 0.2rem;
     border: solid rgba(0, 0, 0, 0.07) 0.1rem;
 }
-.update{
+.update {
     border-left: solid rgba(0, 0, 0, 0.2) 0.3rem;
 }
-.updateLast{
+.updateLast {
     border-left: solid rgba(67, 173, 243, 0.7) 0.3rem;
 }
-.updateTime{
+.updateTime {
     font-size: 1.1rem;
     padding-right: 0.5rem;
 }
-.sub{
+.sub {
     font-size: 0.7rem;
     font-weight: lighter;
 }
-.name{
+.name {
     padding-right: 0.5rem;
 }
-.nameCard{
+.nameCard {
     padding: 0.2rem 0;
 }
 
-.fixedInput{
+.fixedInput {
     width: 14rem;
     height: 1.5rem;
 }
-.tight{
+.tight {
     line-height: 1rem;
 }
-.ratioBox{
+.ratioBox {
     width: 90%;
 }
 
-.floatCard{
-    width: 22rem;
+.floatCard {
+    width: 18rem;
     padding: 1rem;
 }
-.colMenuTitle{
+.colMenuTitle {
     font-size: 1.1rem;
     font-weight: 500;
 }
-
+.progressStr {
+    font-size: 0.85rem;
+    color: rgb(67, 173, 243);
+}

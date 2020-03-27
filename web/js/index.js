@@ -4,7 +4,7 @@ let topNav = new Vue({
         menuOpen: false,
         theme: 'light',
         menuWidth: '45rem',
-        activeName: 5,
+        activeName: 0,
         footingActiveName: [0, 1, 2, 3, 4, 5],
         items: [
             {
@@ -42,25 +42,25 @@ let topNav = new Vue({
     conputed: {},
     methods: {
         isPC: isPC,
-        updateHiddenState: function(onSelectName){
-            document.getElementById(this.items[this.activeName].contentID).hidden = true;
-            document.getElementById(this.items[onSelectName].contentID).hidden = false;
-            this.activeName = onSelectName;
-            let footingHiddenFlag = true;
-            for(let i = 0, len = this.footingActiveName.length; i < len; i++){
-                if(onSelectName == this.footingActiveName[i]){
-                    footingHiddenFlag = false;
-                    break;
+        updateHiddenState: function(onSelectName) {
+            document.getElementById(this.items[this.activeName].contentID).hidden = true
+            document.getElementById(this.items[onSelectName].contentID).hidden = false
+            this.activeName = onSelectName
+            let footingHiddenFlag = true
+            for (let i = 0, len = this.footingActiveName.length; i < len; i++) {
+                if (onSelectName == this.footingActiveName[i]) {
+                    footingHiddenFlag = false
+                    break
                 }
             }
-            document.getElementById("footing").hidden = footingHiddenFlag;
-            this.menuOpen = false;
+            document.getElementById('footing').hidden = footingHiddenFlag
+            this.menuOpen = false
         }
     },
-    created: function(){
-        document.getElementById(this.items[this.activeName].contentID).hidden = false;
-        for(let i = 0; i < this.items.length; i++){
-            this.items[i]['titleBak'] = this.items[i]['title'];
+    created: function() {
+        document.getElementById(this.items[this.activeName].contentID).hidden = false
+        for (let i = 0; i < this.items.length; i++) {
+            this.items[i]['titleBak'] = this.items[i]['title']
         }
     }
-});
+})

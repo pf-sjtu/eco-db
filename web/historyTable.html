@@ -8,13 +8,13 @@
                 </i-col>
                 <i-col span="19" offset="1">
                     <label for="dtBeg">起始</label>
-                    <input type="datetime-local" id="dtBeg" class="fixedInput" v-model="dtBegStr" required/>
+                    <input type="datetime-local" id="dtBeg" class="fixedInput" v-model="dtBegStr" required />
                 </i-col>
             </Row>
             <Row type="flex" justify="start">
                 <i-col :xs="{offset:5}" :lg="{offset:3}" span="20">
                     <label for="dtEnd">结束</label>
-                    <input type="datetime-local" id="dtEnd" class="fixedInput" v-model="dtEndStr" required/>
+                    <input type="datetime-local" id="dtEnd" class="fixedInput" v-model="dtEndStr" required />
                 </i-col>
             </Row>
         </div>
@@ -54,14 +54,7 @@
 </div>
 
 <div id="dataTab">
-    <i-table  
-        :columns="columns" 
-        :data="tableData" 
-        :loading="loading" 
-        :stripe="stripe"
-        :border="border"
-        :size="size"
-        ></i-table>
+    <i-table :columns="columns" :data="tableData" :loading="loading" :stripe="stripe" :border="border" :size="size"></i-table>
 </div>
 
 <script type="text/javascript" src="js/historySearchBox.js"></script>

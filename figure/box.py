@@ -14,6 +14,11 @@ Created on Fri Mar 13 19:20:06 2020
 import numpy as np, pandas as pd, time, sys, math, pickle, json, random
 from matplotlib import pyplot as plt, patches as mpatches, cbook
 from scipy import stats
+import statsmodels.api as sm
+from statsmodels.formula.api import ols
+from statsmodels.stats.anova import anova_lm
+from statsmodels.graphics.factorplots import interaction_plot
+
 
 import add_path
 from utils.global_variables import TEMP_DIR, station_info, rm_tmp
@@ -805,51 +810,8 @@ def check_max_data_span(plt_i=0):
     return max_data_span
 
 
-# # 从数据库选取sta_i号站点的原始数据，然后进行箱线图绘制，粗略查看极值范围
-# ori_extreme()
-
-# # 先用三种方式对三个站点的plt_i号污染物进行初步裁切（舍弃），并且做直方图
-# way3_trim()
-
-# # 计算所有污染物对数化的3sigma边界，存档并且返回
-# bundarys_list = log_sigma3_trim()
-
-# # 做所有污染物按照对数3sigma边界裁切（clip）后的季节箱线图和对数季节箱线图
-# season_boxplot(reload_data = False)
-# season_boxplot(reload_data = True)
-
-# # 读取所有污染物按照对数3sigma边界裁切（clip）后的季节箱线图和对数季节箱线图的图像关键数据
-# log_stats = load_stats(log = True)
-# tab_tex = log_stats.to_latex()
-
-# # 计算plt_i号污染物按照季节和站点分类频率最最高数据所在范围
-# max_data_span = check_max_data_span(plt_i = 0)
-
-# # 计算plt_i号污染物按照季节和站点分类的正态化情况
-# stats_result, log_data_stats = log_normal_check(plt_i = 0, figure = False)
-
-# # log_normal_check 对所有污染物处理
-# log_data_stats_all, not_normal_list = log_normal_check_all(latex = False)
-# log_data_stats_all.reset_index(drop = True, inplace = True)
-# log_data_stats_all_latex, not_normal_list = log_normal_check_all(latex = True)
-
-with open("log_not_normal_list.json", "r") as f:
-    not_normal_list = json.load(f)
-
-
-# plt_i = 5
-# sta_i = 0
-# ssn_i = 2
-# # co_span = check_max_data_span(plt_i = plt_i)
-# data_t = load_data_dict(plt_i = plt_i)
-# data_tt = []
-# for year in data_t[stations[sta_i]][ssn_i]:
-#     data_tt += data_t[stations[sta_i]][ssn_i][year]
-# data_tt = pd.Series(data_tt)
-# data_tt_log = pd.Series(np.log(data_tt))
-
-"""
-def f_twoway(df_c, col_fac1, col_fac2, col_sta, interaction=False):
+# 备选的方差分析方式，速度较快但是自己造轮子
+def f_twoway_m2(df_c, col_fac1, col_fac2, col_sta, interaction=False):
     df = df_c.copy()
     list_fac1 = df[col_fac1].unique()
     list_fac2 = df[col_fac2].unique()
@@ -918,7 +880,8 @@ def f_twoway(df_c, col_fac1, col_fac2, col_sta, interaction=False):
     else:
         return "interaction参数错误"
 
-def nova_2way(plt_i):
+
+def nova_2way_m2(plt_i):
     return_dict = log_normal_stats(plt_i, figure=False)
     df_t = return_dict["log_data"]
 
@@ -943,13 +906,13 @@ def nova_2way(plt_i):
         col_sta=pollutants[plt_i],
         interaction=True,
     )
-"""
-import statsmodels.api as sm
-from statsmodels.formula.api import ols
-from statsmodels.stats.anova import anova_lm
-from statsmodels.graphics.factorplots import interaction_plot
 
 
+# 读取不符合正态假设的数据的字典
+with open("log_not_normal_list.json", "r") as f:
+    not_normal_list = json.load(f)
+
+# 接下来三个函数是方差分析
 def eta_squared(aov):
     aov["eta_sq"] = "NaN"
     aov["eta_sq"] = aov[:-1]["sum_sq"] / sum(aov["sum_sq"])
@@ -1000,11 +963,42 @@ def nova_2way(plt_i, interaction_figure=False, qq_figure=True):
     omega_squared(aov_table)
 
     if qq_figure:
-        plt.figure(figsize=(8, 8))
         fig = sm.qqplot(model.resid, line="s")
-        plt.show()
+        ax = fig.axes[0]
+        # plt.show()
 
     return aov_table
 
 
+# # 从数据库选取sta_i号站点的原始数据，然后进行箱线图绘制，粗略查看极值范围
+# ori_extreme()
+
+# # 先用三种方式对三个站点的plt_i号污染物进行初步裁切（舍弃），并且做直方图
+# way3_trim()
+
+# # 计算所有污染物对数化的3sigma边界，存档并且返回
+# bundarys_list = log_sigma3_trim()
+
+# # 做所有污染物按照对数3sigma边界裁切（clip）后的季节箱线图和对数季节箱线图
+# season_boxplot(reload_data=False)
+# season_boxplot(reload_data=True)
+
+# # 读取所有污染物按照对数3sigma边界裁切（clip）后的季节箱线图和对数季节箱线图的图像关键数据
+# log_stats = load_stats(log=True)
+# tab_tex = log_stats.to_latex()
+
+# # 计算plt_i号污染物按照季节和站点分类频率最最高数据所在范围
+# max_data_span = check_max_data_span(plt_i=0)
+
+# # 计算plt_i号污染物按照季节和站点分类的正态化情况
+# stats_result, log_data_stats = log_normal_check(plt_i=0, figure=False)
+
+# # log_normal_check 对所有污染物处理
+# log_data_stats_all, not_normal_list = log_normal_check_all(latex=False)
+# log_data_stats_all.reset_index(drop=True, inplace=True)
+# log_data_stats_all_latex, not_normal_list = log_normal_check_all(latex=True)
+
+# 对plt_i污染物的站点、季节分类进行方差分析
 aov_table = nova_2way(plt_i=0, interaction_figure=False, qq_figure=True)
+
+# TODO: 学习方差分析的效应量

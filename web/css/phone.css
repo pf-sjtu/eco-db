@@ -1,4 +1,4 @@
-#menuButton{
+#menuButton {
     color: white;
     background: rgba(0, 0, 0, 0);
     border: 0;
@@ -7,63 +7,67 @@
     font-size: 1rem;
     float: left;
 }
-.icon{
+.icon {
     width: 1.5rem;
     height: 1.5rem;
     float: left;
 }
-#title{
+#title {
     font-size: 1rem;
     padding-right: 1rem;
     float: right;
 }
-#title span{
+#title span {
     font-size: 0.8rem;
 }
-#heading{
+#heading {
     height: 3em;
     width: 100%;
     border-bottom: solid #ccd3db 3px;
 }
-#content{
+#content {
     min-height: 85%;
 }
-#footing{
+#footing {
     height: 3rem;
 }
 
-#contentBody{
+#contentBody {
     width: 100%;
     height: 100%;
     padding: 0 2%;
 }
-#live, #historyGraph, #historyTable, #download{
+#live,
+#historyGraph,
+#historyTable,
+#download {
     padding: 1rem 0;
 }
-#about, #setting{
+#about,
+#setting {
     padding: 1rem 0 2rem 0;
 }
 
-#graphFrame{
+#graphFrame {
     height: 20rem;
     width: 100%;
-} 
+}
 
-.divTitle{
+.divTitle {
     font-size: 2rem;
     color: rgba(67, 173, 243, 0.7);
 }
 
-.box{
+.box {
     line-height: 2rem;
 }
 
-.button{
+.button {
     padding: 0.2rem 0.7rem;
     border: 0;
     border-radius: 1.5rem;
     font-size: 0.9rem;
 }
-.floatCard{
+.floatCard {
     margin: 0 auto;
 }

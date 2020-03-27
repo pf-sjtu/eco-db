@@ -1,4 +1,5 @@
 <p class="divTitle">站点实况</p>
+<div id="liveMap"></div>
 <div id="liveCard">
     <template v-for="(info, index) in stationInfo">
         <div class="floatCard">
@@ -7,10 +8,10 @@
                     <Icon :type="titleIconType"></Icon>
                     {{ info.title }}
                 </p>
-                <a href="#" slot="extra" @click.prevent="refresh">
+                <!-- <a href="#" slot="extra" @click.prevent="refresh">
                     <Icon :type="refreshIconType"></Icon>
                     刷新
-                </a>
+                </a> -->
                 <div class="liveCardContent">
                     <Row type="flex" justify="center">
                         <i-col span="8" class="title">最新数据</i-col>
@@ -21,15 +22,15 @@
                         <i-col span="12">{{ info.dtBegStr }}</i-col>
                     </Row>
                     <Divider dashed>实时数据</Divider>
-                    <Row  v-for="(item, itemIndex) in info.lastData" :key="index + '-' + itemIndex" type="flex" justify="center">
+                    <Row v-for="(item, itemIndex) in info.lastData" :key="index + '-' + itemIndex" type="flex" justify="center">
                         <i-col span="8" class="title">{{ item.title }}</i-col>
                         <i-col span="12"><span class="data">{{ item.data }}</span><span class="unit"> {{ item.unit }}</span></i-col>
                     </Row>
-                    <Divider dashed><a href="#" @click.prevent="jumpDetail(info.title, info.dtBegStr)">详细条目</a></Divider>
+                    <Divider dashed><a href="#" @click.prevent="jumpDetail(info.title, info.dtBegStr)">详细条目</a> </Divider>
                 </div>
             </Card>
         </div>
     </template>
-    <p class="liveCardEnd"></p>
 </div>
+<div class="liveCardEnd"></div>
 <script type="text/javascript" src="js/live.js"></script>

@@ -1,46 +1,45 @@
 /* 进度条 */
-#loadingProgress{
+#loadingProgress {
     height: 100%;
     font-family: Arial, Helvetica, sans-serif;
     text-align: center;
     padding-top: 4rem;
     z-index: 40;
 }
-.loadingItem{
+.loadingItem {
     font-size: 1.2rem;
     color: black;
     font-weight: 500;
     line-height: 2rem;
 }
-#loadingPageIcon{
+#loadingPageIcon {
     font-size: 1rem;
     font-weight: 700;
     line-height: 1.6rem;
 }
-#loadingPageIcon span{
+#loadingPageIcon span {
     font-size: 0.8rem;
     font-weight: 600;
 }
-#loadingPageIcon img{
+#loadingPageIcon img {
     width: 10rem;
     height: 10rem;
 }
 
-
 /* 整体 */
-html, body{
+html,
+body {
     margin: 0px;
     height: 100%;
 }
-#container{
+#container {
     width: 100%;
     height: 100%;
     margin: 0 auto;
 }
 
-
 /* 上导航栏 */
-#topNav{
+#topNav {
     height: auto;
     width: 100%;
     margin-left: 0;
@@ -49,33 +48,31 @@ html, body{
     top: 0;
     z-index: 20;
 }
-#headingName{
+#headingName {
     width: 100%;
-    background:rgb(67, 173, 243);
+    background: rgb(67, 173, 243);
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
     float: left;
 }
-#title{
+#title {
     text-align: right;
     font-style: italic;
     font-weight: bold;
     color: white;
 }
-#title span{
+#title span {
     font-weight: normal;
-    color:rgba(0, 0, 0, 0.7);
+    color: rgba(0, 0, 0, 0.7);
 }
 
-
 /* 内容 */
-#content{
+#content {
     clear: both;
 }
 
-
 /* 页脚 */
-#footing{
+#footing {
     width: 100%;
     clear: both;
     text-align: center;
@@ -87,13 +84,13 @@ html, body{
     /* margin-top: -100px; */
     /* clear: both; */
 }
-#footingInfo{
+#footingInfo {
     /* margin-left: 10%;
     margin-right: 10%; */
     padding: 0.7rem;
     border-top: solid rgba(0, 0, 0, 0.07) 0.4rem;
 }
-#footingInfo a{
-    color:rgba(0, 0, 0, 0.4);
+#footingInfo a {
+    color: rgba(0, 0, 0, 0.4);
     text-decoration: none;
 }

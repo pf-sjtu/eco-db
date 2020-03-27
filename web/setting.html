@@ -24,9 +24,7 @@
     <div class="settingBox">
         <p>实况页关键列</p>
         <Checkbox-Group v-model="keyCols">
-            <Checkbox v-for="(col, index) in cols"
-            :key="index"
-            :label="col.key">{{ col.title }}</Checkbox>
+            <Checkbox v-for="(col, index) in cols" :key="index" :label="col.key">{{ col.title }}</Checkbox>
         </Checkbox-Group>
     </div>
 </div>
