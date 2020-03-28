@@ -47,11 +47,8 @@ let topNav = new Vue({
             document.getElementById(this.items[onSelectName].contentID).hidden = false
             this.activeName = onSelectName
             let footingHiddenFlag = true
-            for (let i = 0, len = this.footingActiveName.length; i < len; i++) {
-                if (onSelectName == this.footingActiveName[i]) {
-                    footingHiddenFlag = false
-                    break
-                }
+            if (this.footingActiveName.indexOf(onSelectName) >= 0) {
+                footingHiddenFlag = false
             }
             document.getElementById('footing').hidden = footingHiddenFlag
             this.menuOpen = false

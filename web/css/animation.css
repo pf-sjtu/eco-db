@@ -1,0 +1,18 @@
+#loadingProgress {
+    animation-name: loadingProgressFade;
+    animation-duration: 1s;
+}
+
+@keyframes loadingProgressFade {
+    0% {
+        opacity: 1;
+    }
+    15% {
+        background: rgb(67, 173, 243);
+        opacity: 1;
+    }
+    100% {
+        background: #fff;
+        opacity: 0;
+    } /*动画结束位置*/
+}

@@ -1,3 +1,12 @@
+#loadingProgressBox {
+    animation-name: loadingProgressPC;
+    animation-duration: 1s;
+}
+@keyframes loadingProgressPC {
+    to {
+        margin: 10rem auto;
+    } /*动画结束位置*/
+}
 #menuButton {
     width: 2rem;
     font-size: 2rem;
@@ -126,6 +135,8 @@
 }
 .floatCard {
     float: left;
+    width: 19rem;
+    padding: 1rem;
     /* right: 50%;
     position: relative; */
 }

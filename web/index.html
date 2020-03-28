@@ -11,37 +11,49 @@
     <body>
         <!-- 加载外部资源 -->
         <div id="loadingProgress">
-            <div id="loadingPageIcon">
-                <p><img src="pic/icon2.small.png" alt="" /></p>
-                <p>上海城市森林生态站数据库系统</p>
-                <p>S<span>hanghai</span> UR<span>ban</span> F<span>orest</span> E<span>cosystem research</span> S<span>tation</span> <span>database</span></p>
+            <div id="loadingProgressBox">
+                <div id="loadingPageIcon">
+                    <img src="pic/icon2.small.png" alt="" /><br />
+                    上海城市森林生态站数据库系统<br />
+                    S<span>hanghai</span> UR<span>ban</span> F<span>orest</span> E<span>cosystem research</span> S<span>tation</span> <span>database</span>
+                </div>
+                <br /><br />
+                <span class="loadingItem">正在加载资源</span><br />
+                <progress id="loadingProgressBar" value="0" max="6"></progress>
             </div>
-            <br />
-            <p class="loadingItem">正在加载资源</p>
-            <progress id="loadingProgressBar" value="0" max="6"></progress>
             <!-- Step1 vue -->
-            <p class="loadingItem">加载 Vue...</p>
+            <script>
+                console.log('Loading Vue...')
+            </script>
             <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js"></script>
             <!-- <script type="text/javascript" src="ext/vue/vue.js"></script> -->
             <script type="text/javascript" src="js/loadingStep.js"></script>
             <!-- Step2 iveiw -->
-            <p class="loadingItem">加载 iVeiw...</p>
+            <script>
+                console.log('Loading iVeiw...')
+            </script>
             <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/view-design@4.1.3/dist/iview.min.js"></script>
             <!-- <script type="text/javascript" src="ext/viewui/iview.min.js"></script> -->
             <script type="text/javascript" src="js/loadingStep.js"></script>
             <!-- Step3 ECharts -->
-            <p class="loadingItem">加载 ECharts...</p>
+            <script>
+                console.log('Loading ECharts...')
+            </script>
             <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4.7.0/dist/echarts.min.js"></script>
             <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4.7.0/map/js/province/shanghai.js"></script>
             <!-- <script type="text/javascript" src="ext/echarts/echarts2.js"></script> -->
             <script type="text/javascript" src="js/loadingStep.js"></script>
             <!-- Step4 JQuery -->
-            <p class="loadingItem">加载 JQuery...</p>
+            <script>
+                console.log('Loading JQuery...')
+            </script>
             <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
             <!-- <script type="text/javascript" src="ext/jquery/jquery-3.4.1.js"></script> -->
             <script type="text/javascript" src="js/loadingStep.js"></script>
             <!-- Step5 myScripts -->
-            <p class="loadingItem">加载 自定义的脚本和CSS...</p>
+            <script>
+                console.log('Loading Customized Scripts and CSS...')
+            </script>
             <script type="text/javascript" src="js/pfUtils.js"></script>
             <script type="text/javascript" src="js/layout.js"></script>
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/view-design@4.1.3/dist/styles/iview.css" />
@@ -49,9 +61,11 @@
             <link rel="stylesheet" type="text/css" href="css/indexDetail.css" />
             <script type="text/javascript" src="js/loadingStep.js"></script>
             <!-- Step6 deploy -->
-            <p class="loadingItem">正在部署...</p>
+            <script>
+                console.log('Deploying...')
+            </script>
         </div>
-        <div id="topNav" hidden>
+        <div id="topNav">
             <template v-if="isPC()">
                 <link rel="stylesheet" type="text/css" href="css/pc.css" />
             </template>
@@ -93,7 +107,7 @@
             </Row>
         </div>
 
-        <div id="container" hidden>
+        <div id="container">
             <div id="heading"></div>
             <div id="content">
                 <div id="contentBody">
@@ -111,6 +125,7 @@
         </div>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript" src="js/loadingStep.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/animation.css" />
         <script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
         <script type="text/javascript" src="js/afterLoad.js"></script>
     </body>

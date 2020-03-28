@@ -1,10 +1,20 @@
 /* 进度条 */
 #loadingProgress {
     height: 100%;
+    width: 100%;
+    background: #fff;
+    /* padding-top: 4rem; */
+    z-index: 40;
+    position: fixed;
+}
+#loadingProgressBox {
+    width: 20rem;
+    height: 30rem;
+    margin: 6rem auto;
+    color: #000;
     font-family: Arial, Helvetica, sans-serif;
     text-align: center;
-    padding-top: 4rem;
-    z-index: 40;
+    overflow: hidden;
 }
 .loadingItem {
     font-size: 1.2rem;
