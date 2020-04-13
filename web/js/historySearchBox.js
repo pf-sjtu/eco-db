@@ -8,21 +8,22 @@ let dataSearchBox = new Vue({
         dataReady: false,
         colNames: [],
         colLen: 0,
-        dataLen: 0
+        dataLen: 0,
+        tabUnitCols: [],
     },
     computed: {
-        stationNo: function() {
+        stationNo: function () {
             for (let i = 0; i < this.stations.length; i++) {
                 if (this.stationName == this.stations[i]['station_name2']) {
                     return i
                 }
             }
             return 0
-        }
+        },
     },
     methods: {
         isPC: isPC,
-        queryDetailLimited: function() {
+        queryDetailLimited: function () {
             let dtBeg = new Date(this.dtBegStr)
             let dtEnd = new Date(this.dtEndStr)
             let dtNow = new Date()
@@ -37,77 +38,89 @@ let dataSearchBox = new Vue({
                 this.dtBegStr = dtBeg.Format('yyyy-MM-ddThh:mm')
                 alert('由于性能限制，查询的时间跨度应该在' + settingProp.dataHour + '小时以内，已将起始时间修正为' + this.dtBegStr)
             } else {
-                this.queryDetail(dataTab)
+                this.queryDetail()
                 this.dataReady = true
             }
         },
-        queryDetail: function(targetTab) {
-            targetTab.loading = true
+        queryDetail: function () {
+            function htmlTab(columns, data) {
+                dataArr = simpleDeepCopy(data)
+                let headTabLeft = '<div class="headTableLeft"><table><tbody><th>' + columns.reverse().pop() + '</th></tbody></table></div>'
+                columns.reverse()
+                let headTab = '<div class="headTable"><table><tbody><th>' + columns.join('</th><th>') + '</th></tbody></table></div>'
+                headTab = '<div class="headTableGroup">' + headTabLeft + headTab + '</div>'
 
-            let columns = simpleDeepCopy(this.colNames[this.stationNo])
-            for (let i = 0, len = columns.length; i < len; i++) {
-                columns[i].width = '90px'
-                columns[i].sortable = true
-                if (columns[i].unit.length) {
-                    columns[i].title += ' (' + columns[i].unit + ')'
+                let dataTabLeft = ''
+                let dataTab = ''
+                for (let i = 0, len = dataArr.length; i < len; i++) {
+                    dataTabLeft += '<tr><td>' + dataArr[i].reverse().pop() + '</td></tr>'
+                    dataArr[i].reverse()
+                    dataTab += '<tr><td>' + dataArr[i].join('</td><td>') + '</td></tr>'
+                }
+                dataTabLeft = '<div class="dataTableLeft"><table><tbody>' + dataTabLeft + '</tbody></table></div>'
+                dataTab = '<div class="dataTable"><table><tbody>' + dataTab + '</tbody></table></div>'
+                dataTab = '<div class="dataTableGroup">' + dataTabLeft + dataTab + '</div>'
+
+                return headTab + dataTab
+            }
+
+            this.tabUnitCols = []
+            for (let i = 0, len = this.colNames[this.stationNo].length; i < len; i++) {
+                this.tabUnitCols.push(this.colNames[this.stationNo][i].title)
+                if (this.colNames[this.stationNo][i].unit.length) {
+                    this.tabUnitCols[i] += ' (' + this.colNames[this.stationNo][i].unit + ')'
                 }
             }
-            // createParamValues('width', '85px', columns);
-            // createParamValues('sortable', 'true', columns);
-            columns[0]['width'] = '150px'
-            columns[0]['fixed'] = 'left'
-            targetTab.columns = columns
 
             let data
             let xhr2 = new XMLHttpRequest()
-            let q =
-                'SELECT * FROM ' +
-                this.stations[this.stationNo]['db_table_name'] +
-                " WHERE datetime >= '" +
-                this.dtBegStr +
-                "' AND datetime <= '" +
-                this.dtEndStr +
-                "'"
-            xhr2.open('GET', '../php/qGET.php?q=' + q, true)
-            xhr2.onload = function() {
+            xhr2.open(
+                'GET',
+                '../php/qGETsta.php?tb=' +
+                    this.stations[this.stationNo]['db_table_name'] +
+                    '&dt_beg=' +
+                    this.dtBegStr +
+                    '&dt_end=' +
+                    this.dtEndStr +
+                    '&dtype=num',
+                true
+            )
+            xhr2.onload = function () {
                 if (this.status == 200) {
                     data = JSON.parse(this.responseText)
-                    if (data['phpErrorCode'] == undefined) {
-                        targetTab.tableData = data
-                    } else {
-                        targetTab.tableData = []
-                        targetTab.columns = []
+                    if (data['phpErrorCode'] != undefined) {
+                        data = []
                     }
-                    dataSearchBox.colLen = targetTab.columns.length
-                    dataSearchBox.dataLen = targetTab.tableData.length
-                    targetTab.loading = false
+                    dataSearchBox.colLen = dataSearchBox.tabUnitCols.length
+                    dataSearchBox.dataLen = data.length
+                    let tabElem = document.getElementById('dataTab')
+                    tabElem.innerHTML = htmlTab(dataSearchBox.tabUnitCols, data)
+                    let dataElem = tabElem.getElementsByClassName('dataTable')[0]
+                    dataElem.removeEventListener('scroll', dataTabScrollSync)
+                    dataElem.addEventListener('scroll', dataTabScrollSync)
                 }
             }
             xhr2.send()
-        }
+        },
     },
     watch: {
-        dtBegStr: function() {
+        dtBegStr: function () {
             this.dataReady = false
         },
-        dtEndStr: function() {
+        dtEndStr: function () {
             this.dataReady = false
-        }
+        },
     },
-    created: function() {
-        this.dtBegStr = new Date().add(0, -3).Format('yyyy-MM-ddThh:mm')
+    created: function () {
+        this.dtBegStr = new Date().add(0, -24).Format('yyyy-MM-ddThh:mm')
         this.dtEndStr = new Date().Format('yyyy-MM-ddThh:mm')
-    }
+    },
 })
 
-let dataTab = new Vue({
-    el: '#dataTab',
-    data: {
-        columns: [],
-        tableData: [],
-        loading: false,
-        stripe: false,
-        border: true,
-        size: 'small'
-    }
-})
+function dataTabScrollSync() {
+    let dataElem = document.getElementById('dataTab').getElementsByClassName('dataTable')[0]
+    let dataElemLeft = document.getElementById('dataTab').getElementsByClassName('dataTableLeft')[0]
+    let headElem = document.getElementById('dataTab').getElementsByClassName('headTable')[0]
+    dataElemLeft.scroll(0, dataElem.scrollTop)
+    headElem.scroll(dataElem.scrollLeft, 0)
+}

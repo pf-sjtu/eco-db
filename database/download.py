@@ -360,16 +360,16 @@ if __name__ == "__main__":
         "--beg",
         nargs="+",
         type=int,
-        default=[2020, 1, 2, 12, 0],
-        help='The datetime of the begin of data in "init" and "once" mode. (2020 1 2 12 0)',
+        default=[2020, 3, 30, 12, 0],
+        help='The datetime of the begin of data in "init" and "once" mode. (2020 3 30 12 0)',
     )
     argparser.add_argument(
         "-e",
         "--end",
         nargs="+",
         type=int,
-        default=[2020, 1, 2, 13, 0],
-        help='The datetime of the end of data in "init" and "once" mode. (2020 1 2 13 0)',
+        default=[2020, 3, 30, 13, 0],
+        help='The datetime of the end of data in "init" and "once" mode. (2020 3 30 13 0)',
     )
 
     args = argparser.parse_args()

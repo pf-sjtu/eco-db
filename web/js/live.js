@@ -8,10 +8,11 @@ let liveCard = new Vue({
         firstLines: [],
         lastLines: [],
         statusCounter: 0,
-        emptyPlaceHolder: '--'
+        emptyPlaceHolder: '--',
+        liveMap: {},
     },
     computed: {
-        stationInfo: function() {
+        stationInfo: function () {
             let stationInfo = []
             let info, item
             if (this.statusCounter == 2 * this.stations.length) {
@@ -39,11 +40,11 @@ let liveCard = new Vue({
                 }
             }
             return stationInfo
-        }
+        },
     },
     methods: {
         isPC: isPC,
-        refresh: function() {
+        refresh: function () {
             let stationTb, linkFirst, linkLast
             let xhrFirst = []
             let xhrLast = []
@@ -52,10 +53,11 @@ let liveCard = new Vue({
                 stationTb = this.stations[stationNo]['db_table_name']
 
                 if (!liveCard.firstLines.length) {
-                    linkFirst = '../php/qGET.php?q=SELECT * FROM ' + stationTb + ' ORDER BY datetime ASC LIMIT 1;'
+                    linkFirst = '../php/qGETsta.php?tb=' + stationTb + '&order=A&limit=1'
+                    // linkFirst = '../php/qGET.php?q=SELECT * FROM ' + stationTb + ' ORDER BY datetime ASC LIMIT 1;'
                     xhrFirst[stationNo] = new XMLHttpRequest()
                     xhrFirst[stationNo].open('GET', linkFirst, true)
-                    xhrFirst[stationNo].onload = function() {
+                    xhrFirst[stationNo].onload = function () {
                         if (this.status == 200) {
                             data = JSON.parse(this.responseText)
                             if (data['phpErrorCode'] == undefined) {
@@ -69,10 +71,11 @@ let liveCard = new Vue({
                     liveCard.statusCounter++
                 }
 
-                linkLast = '../php/qGET.php?q=SELECT * FROM ' + stationTb + ' ORDER BY datetime DESC LIMIT 1;'
+                // linkLast = '../php/qGET.php?q=SELECT * FROM ' + stationTb + ' ORDER BY datetime DESC LIMIT 1;'
+                linkLast = '../php/qGETsta.php?tb=' + stationTb + '&order=D&limit=1'
                 xhrLast[stationNo] = new XMLHttpRequest()
                 xhrLast[stationNo].open('GET', linkLast, true)
-                xhrLast[stationNo].onload = function() {
+                xhrLast[stationNo].onload = function () {
                     if (this.status == 200) {
                         data = JSON.parse(this.responseText)
                         if (data['phpErrorCode'] == undefined) {
@@ -84,7 +87,7 @@ let liveCard = new Vue({
                 xhrLast[stationNo].send()
             }
         },
-        jumpDetail: function(stationName2, dtBegStr) {
+        jumpDetail: function (stationName2, dtBegStr) {
             dataSearchBox.stationName = stationName2
             let tmp = dtBegStr.replace(' ', 'T').split(':')
             tmp.length = 2
@@ -93,8 +96,8 @@ let liveCard = new Vue({
             dataSearchBox.dtEndStr = dtBegStr
             topNav.updateHiddenState(2)
             dataSearchBox.queryDetailLimited()
-        }
-    }
+        },
+    },
 })
 
 function genLiveMap() {
@@ -102,7 +105,7 @@ function genLiveMap() {
     for (let i = 0, len = liveCard.stations.length; i < len; i++) {
         tmp = {
             name: liveCard.stations[i]['station_name2'],
-            value: geoCoordConvert([liveCard.stations[i]['longitude'], liveCard.stations[i]['latitude']])
+            value: geoCoordConvert([liveCard.stations[i]['longitude'], liveCard.stations[i]['latitude']]),
         }
 
         stationSeries.push(tmp)
@@ -113,28 +116,28 @@ function genLiveMap() {
     option = {
         tooltip: {
             trigger: 'item',
-            formatter: '{b}'
+            formatter: '{b}',
         },
         geo: {
             map: '上海',
             label: {
                 normal: {
-                    show: false
+                    show: false,
                 },
                 emphasis: {
-                    show: false
-                }
+                    show: false,
+                },
             },
             roam: false,
             itemStyle: {
                 normal: {
                     areaColor: '#d5e0eb',
-                    borderColor: '#fff'
+                    borderColor: '#fff',
                 },
                 emphasis: {
-                    areaColor: '#abcdef'
-                }
-            }
+                    areaColor: '#abcdef',
+                },
+            },
         },
         series: [
             {
@@ -145,7 +148,7 @@ function genLiveMap() {
                     color: '#43adf3',
                     period: 6,
                     scale: 3,
-                    brushType: 'stroke'
+                    brushType: 'stroke',
                 },
                 coordinateSystem: 'geo',
                 data: stationSeries,
@@ -156,32 +159,34 @@ function genLiveMap() {
                         formatter: '{b}',
                         fontSize: 14,
                         position: 'left',
-                        color: '#0099ff'
+                        color: '#0099ff',
                     },
                     emphasis: {
                         show: true,
                         fontSize: 14,
                         position: 'left',
-                        color: '#896800'
-                    }
+                        color: '#896800',
+                    },
                 },
                 itemStyle: {
                     normal: {
-                        color: '#43adf3'
+                        color: '#43adf3',
                     },
                     emphasis: {
                         borderColor: '#896800',
-                        borderWidth: 3
-                    }
-                }
-            }
-        ]
+                        borderWidth: 3,
+                    },
+                },
+            },
+        ],
     }
 
     myChart.setOption(option)
     if (option && typeof option === 'object') {
         myChart.setOption(option, true)
     }
+
+    return myChart
 }
 
 // genLiveMap();

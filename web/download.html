@@ -58,20 +58,22 @@
     </div>
     <div class="box graphBox2">
         <Row type="flex" justify="start">
-            <i-col :xs="{span:4}" :lg="{span:2}">
-                <Row class="bold" type="flex" justify="start">
-                    信息
-                </Row>
-                <br />
+            <i-col :xs="{span:3, offset:1}" :lg="{span:2}">
+                <template v-if="isPC()">
+                    <Row class="bold" type="flex" justify="start">
+                        信息
+                    </Row>
+                    <br />
+                </template>
                 <Row type="flex" justify="start" v-if="dataStatus">
-                    <i-circle :percent="progress * 100" :stroke-color="dataColor" size="40">
+                    <i-circle :percent="progress * 100" :stroke-color="dataColor" :size="40">
                         <span v-if="dataEmpty==-1" class="progressStr">{{ progressStr }}</span>
-                        <Icon v-if="dataEmpty==0" type="ios-close" size="30" style="color:#ff5500"></Icon>
-                        <Icon v-if="dataEmpty==1" type="ios-checkmark" size="30" style="color:#5cb85c"></Icon>
+                        <Icon v-if="dataEmpty==0" type="ios-close" size="30" style="color: #ff5500;"></Icon>
+                        <Icon v-if="dataEmpty==1" type="ios-checkmark" size="30" style="color: #5cb85c;"></Icon>
                     </i-circle>
                 </Row>
             </i-col>
-            <i-col :xs="{span:19}" :lg="{span:21}" offset="1">
+            <i-col :xs="{span:20}" :lg="{span:20, offset:1}">
                 <template v-if="dataStatus">
                     <Row type="flex" justify="start" v-for="(data, index) in dataArrays" :key="index">
                         <i-col span="2" offset="1">

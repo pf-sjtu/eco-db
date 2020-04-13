@@ -117,3 +117,50 @@ h2 {
     font-size: 0.85rem;
     color: rgb(67, 173, 243);
 }
+#dataTab {
+    width: 95%;
+    margin: 0 auto;
+}
+#dataTab .dataTable,
+#dataTab .dataTableLeft {
+    max-height: 32rem;
+}
+#dataTab .dataTable {
+    overflow: auto;
+}
+#dataTab .dataTableLeft {
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+#dataTab .headTable {
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+#dataTab th,
+#dataTab td {
+    min-width: 6rem;
+    text-align: center;
+}
+#dataTab td {
+    height: 1rem;
+    font-size: 0.8rem;
+}
+#dataTab th {
+    font-size: 0.7rem;
+    background-color: rgba(67, 173, 243, 0.2);
+    /*     background-color: #efefef; */
+    height: 3.5rem;
+    color: black;
+}
+#dataTab .headTableLeft th,
+#dataTab .dataTableLeft td {
+    min-width: 8.5rem;
+}
+#dataTab .headTableLeft,
+#dataTab .dataTableLeft {
+    float: left;
+}
+#dataTab .dataTable tr:nth-child(2n),
+#dataTab .dataTableLeft tr:nth-child(2n) {
+    background-color: #efefef;
+}

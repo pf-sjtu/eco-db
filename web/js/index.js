@@ -52,12 +52,12 @@ let topNav = new Vue({
             }
             document.getElementById('footing').hidden = footingHiddenFlag
             this.menuOpen = false
+            if (isPC()) {
+                liveCard.liveMap.resize()
+            }
         }
     },
     created: function() {
         document.getElementById(this.items[this.activeName].contentID).hidden = false
-        for (let i = 0; i < this.items.length; i++) {
-            this.items[i]['titleBak'] = this.items[i]['title']
-        }
     }
 })

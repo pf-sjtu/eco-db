@@ -1,5 +1,5 @@
 // yyyy-MM-ddThh:mm:ss
-Date.prototype.Format = function(fmt) {
+Date.prototype.Format = function (fmt) {
     //author: meizz
     let o = {
         'M+': this.getMonth() + 1, //月份
@@ -8,7 +8,7 @@ Date.prototype.Format = function(fmt) {
         'm+': this.getMinutes(), //分
         's+': this.getSeconds(), //秒
         'q+': Math.floor((this.getMonth() + 3) / 3), //季度
-        S: this.getMilliseconds() //毫秒
+        S: this.getMilliseconds(), //毫秒
     }
     if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length))
     for (let k in o) {
@@ -16,7 +16,7 @@ Date.prototype.Format = function(fmt) {
     }
     return fmt
 }
-Date.prototype.add = function(d = 0, h = 0, m = 0, s = 0, ms = 0) {
+Date.prototype.add = function (d = 0, h = 0, m = 0, s = 0, ms = 0) {
     let ts = Date.parse(this) + ms + 1000 * s + 1000 * 60 * m + 1000 * 60 * 60 * h + 1000 * 60 * 60 * 24 * d
     let dt = new Date()
     dt.setTime(ts)
@@ -54,22 +54,10 @@ function createParamValues(name, value, arr) {
     return arr
 }
 
-function qGET(q = 'SELECT * FROM station_info', dtype = '') {
-    let xhr = new XMLHttpRequest()
-    xhr.open('GET', '../php/qGET.php?q=' + q + '&dtype=' + dtype, true)
-    xhr.onload = function() {
-        if (this.status == 200) {
-            let result = JSON.parse(this.responseText)
-            console.log(result)
-        }
-    }
-    xhr.send()
-}
-
 function simpleDeepCopy(obj) {
     return JSON.parse(JSON.stringify(obj))
 }
-Array.prototype.simpleDeepCopy = function() {
+Array.prototype.simpleDeepCopy = function () {
     return JSON.parse(JSON.stringify(this))
 }
 
@@ -83,7 +71,7 @@ function powerSet(arr) {
     return ps
 }
 
-Array.prototype.swap = function(digit1, digit2) {
+Array.prototype.swap = function (digit1, digit2) {
     let tmp = this[digit1]
     this[digit1] = this[digit2]
     this[digit2] = tmp
@@ -131,7 +119,7 @@ function deepEquel(obj1, obj2) {
     return JSON.stringify(obj1) == JSON.stringify(obj2)
 }
 
-Array.prototype.dropDuplicate = function(sortby) {
+Array.prototype.dropDuplicate = function (sortby) {
     let sortedArr = this.simpleDeepCopy()
     if (typeof sortby == 'function') {
         sortedArr.sort(sortby)
@@ -168,7 +156,7 @@ function nDimOption(dim, optionArray) {
 }
 
 function genCmpFunc(key) {
-    comKey = function(a, b) {
+    comKey = function (a, b) {
         let x = a[key]
         let y = b[key]
         if (x < y) {
@@ -231,10 +219,7 @@ function geoCoordConvert(geoArray) {
     }
     for (let i = 0, len = arr.length; i < len; i++) {
         if (typeof arr[i] == 'string' && arr[i].indexOf('°') > 0) {
-            tmp = arr[i]
-                .replace(/′/g, '°')
-                .replace(/″/g, '')
-                .split('°')
+            tmp = arr[i].replace(/′/g, '°').replace(/″/g, '').split('°')
             arr[i] = parseFloat(tmp[0])
             for (let j = 1, len2 = tmp.length; j < len2; j++) {
                 arr[i] += parseFloat(tmp[j]) / 60 ** j
@@ -257,15 +242,4 @@ function geoCoordConvert(geoArray) {
         }
     }
     return arr
-}
-
-let GB2312UnicodeConverter = {
-    ToUnicode: function(str) {
-        return escape(str)
-            .toLocaleLowerCase()
-            .replace(/%u/gi, '\\u')
-    },
-    ToGB2312: function(str) {
-        return unescape(str.replace(/\\u/gi, '%u'))
-    }
 }

@@ -1,14 +1,3 @@
-// $(function () {
-//     // 加载各部分内容
-//     $('#about').load('about.html');
-//     $('#footingInfo').load('footingInfo.html');
-//     $('#live').load('live.html');
-//     $('#historyTable').load('historyTable.html');
-//     $('#historyGraph').load('historyGraph.html');
-//     $('#download').load('download.html');
-//     $('#setting').load('setting.html');
-// })
-
 function loadDivRef() {
     let divRefStack = [
         {
@@ -38,6 +27,10 @@ function loadDivRef() {
         {
             url: 'setting.html',
             id: '#setting'
+        },
+        {
+            url: 'afterLoad.html',
+            id: '#afterLoad'
         }
     ].reverse()
 

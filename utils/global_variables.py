@@ -6,6 +6,7 @@ import os
 import pandas as pd
 import numpy as np
 import platform
+import json
 
 ## return: Windows / Linux
 SYSTEM = platform.system()
@@ -111,3 +112,6 @@ def rm_tmp():
             os.rmdir(filename)
             dir_count += 1
     return {"dir_count": dir_count, "file_count": file_count}
+
+with open("{}/config/db_config.ini".format(ROOT_PATH), "r") as f:
+    db_config = json.load(f)

@@ -1,12 +1,3 @@
-#loadingProgressBox {
-    animation-name: loadingProgressPC;
-    animation-duration: 1s;
-}
-@keyframes loadingProgressPC {
-    to {
-        margin: 10rem auto;
-    } /*动画结束位置*/
-}
 #menuButton {
     width: 2rem;
     font-size: 2rem;
@@ -44,8 +35,6 @@
 #contentBody {
     width: 100%;
     height: 100%;
-    /* padding-left: 5%;
-    padding-right: 5%; */
 }
 
 #graphFrame {
@@ -124,7 +113,6 @@
 #liveMap {
     width: 30%;
     height: 30rem;
-    /* background: rgb(231, 183, 183); */
     float: left;
 }
 #liveCard {

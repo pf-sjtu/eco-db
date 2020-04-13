@@ -19,6 +19,7 @@ from utils.global_variables import (
     col_info,
     clean_series,
     rm_tmp,
+    db_config,
 )
 from utils.color_log import Logger
 
@@ -33,7 +34,12 @@ def connect_db(root_database=False):
     if root_database:
         db_name = "mysql"
     db = MySQLdb.connect(
-        host="127.0.0.1", port=3306, user="root", passwd="mmtt2356", db=db_name, charset='utf8'
+        host=db_config["host"],
+        port=db_config["port"],
+        user=db_config["user"],
+        passwd=db_config["passwd"],
+        db=db_name,
+        charset="utf8",
     )
     return db
 
@@ -156,7 +162,7 @@ def init_db():
 
     db_cursor.execute(
         """CREATE DATABASE IF NOT EXISTS station_db;
-                      USE station_db;"""
+           USE station_db;"""
     )
 
     # create station info
@@ -169,7 +175,7 @@ def init_db():
         s_info_tmp_dir,
         station_info,
         "station_no",
-        "int primary key",
+        "INT PRIMARY KEY",
     )
     # print("{}条站点信息已更新。".format(s_num))
     Logger.log_normal(
@@ -198,6 +204,27 @@ def init_db():
         tb_cols = aval_col_types(ii)
         tb_name = station_info.loc[ii, "db_table_name"]
         creat_table(db_cursor, tb_name, tb_cols["en_name"], tb_cols["type"])
+
+    # add webUser
+    db_cursor.execute(
+        "SELECT DISTINCT CONCAT('''',user,'''@''',host,'''') AS query FROM mysql.user;"
+    )
+    users = [i[0] for i in db_cursor.fetchall()]
+    if "'webUser'@'localhost'" not in users:
+        try:
+            db_cursor.execute(
+                "CREATE USER 'webUser' @'localhost' IDENTIFIED WITH mysql_native_password BY '516150910019';"
+            )
+        except MySQLdb.OperationalError as e:
+            db_cursor.execute(
+                "CREATE USER 'webUser' @'localhost' IDENTIFIED WITH mysql_native_password BY '516150910019';"
+            )
+        Logger.log_normal("USER:", "Add user webUser.")
+    db_cursor.execute(
+        """GRANT SELECT ON station_db.* TO 'webUser' @'localhost';
+        FLUSH PRIVILEGES;"""
+    )
+    Logger.log_normal("USER:", "Privileges flushed.")
 
     close_db(db)
     rm_tmp()

@@ -13,20 +13,20 @@ let dataDownloadingBox = new Vue({
         xhrCur: [],
         xhrCount: 0,
         xhrFinishedCount: 0,
-        dataStatus: 0
+        dataStatus: 0,
     },
     computed: {
-        progress: function() {
+        progress: function () {
             if (this.xhrCount) {
                 return this.xhrFinishedCount / this.xhrCount
             } else {
                 return 0
             }
         },
-        progressStr: function() {
+        progressStr: function () {
             return Math.floor(this.progress * 100) + '%'
         },
-        dataLength: function() {
+        dataLength: function () {
             if (this.dataStatus == 2) {
                 let dataLength = 0
                 for (let i = 0, len = this.dataArrays.length; i < len; i++) {
@@ -37,20 +37,21 @@ let dataDownloadingBox = new Vue({
                 return -1
             }
         },
-        dataEmpty: function() {
+        dataEmpty: function () {
             let i = this.dataLength
             if (i > 1) {
                 i = 1
             }
             return i
         },
-        dataColor: function() {
+        dataColor: function () {
             let colors = ['#43adf3', '#ff5500', '#5cb85c']
             return colors[this.dataEmpty + 1]
-        }
+        },
     },
     methods: {
-        requestData: function() {
+        isPC: isPC,
+        requestData: function () {
             if (this.stationNoSelected.length) {
                 this.dataStatus = 1
                 this.dataArrays = []
@@ -70,7 +71,7 @@ let dataDownloadingBox = new Vue({
                         dtBeg: dtBeg,
                         dtEnd: dtEnd,
                         dtBegStr: dtBeg.Format('yyyy-MM-dd hh:mm'),
-                        dtEndStr: dtEnd.Format('yyyy-MM-dd hh:mm')
+                        dtEndStr: dtEnd.Format('yyyy-MM-dd hh:mm'),
                     }
                     this.dataArrays[stationKey] = []
                     stationTb = this.stations[this.stationNoSelected[stationKey]].db_table_name
@@ -82,18 +83,19 @@ let dataDownloadingBox = new Vue({
                         if (dtBegCur < dtBeg) {
                             dtBegCur = dtBeg
                         }
-                        args =
-                            'q=SELECT * FROM ' +
-                            stationTb +
-                            " WHERE datetime >= '" +
-                            dtBegCur.Format('yyyy-MM-dd hh:mm') +
-                            "' AND datetime < '" +
-                            dtEndCur.Format('yyyy-MM-dd hh:mm') +
-                            "'&dtype=num"
                         tmp = new XMLHttpRequest()
-                        tmp.open('POST', '../php/qPOST.php', true)
-                        tmp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
-                        tmp.onload = function() {
+                        tmp.open(
+                            'GET',
+                            '../php/qGETsta.php?tb=' +
+                                stationTb +
+                                '&dt_beg=' +
+                                dtBegCur.Format('yyyy-MM-dd hh:mm') +
+                                '&dt_end=' +
+                                dtEndCur.Format('yyyy-MM-dd hh:mm') +
+                                '&dtype=num',
+                            true
+                        )
+                        tmp.onload = function () {
                             if (this.status == 200) {
                                 if (this.responseText[0] != '[' && this.responseText.length) {
                                     console.log(this.responseText)
@@ -109,22 +111,18 @@ let dataDownloadingBox = new Vue({
                                 dataDownloadingBox.xhrPop()
                             }
                         }
-                        this.xhrArr[stationKey].push({
-                            xhr: tmp,
-                            args: args
-                        })
+                        this.xhrArr[stationKey].push(tmp)
                         this.xhrCount++
                     }
                 }
                 this.xhrPop()
             }
         },
-        xhrPop: function() {
+        xhrPop: function () {
             if (this.xhrCur.length) {
                 // pop one
-                let xhrConfig = this.xhrCur.pop()
-                xhrConfig['xhr'].send(xhrConfig['args'])
-                console.log('Send POST request:', xhrConfig['args'])
+                let xhr = this.xhrCur.pop()
+                xhr.send()
             } else if (this.xhrArr.length) {
                 // pop an array then pop one and add status
                 this.xhrCur = this.xhrArr.pop()
@@ -135,10 +133,9 @@ let dataDownloadingBox = new Vue({
                 console.log('All POST requests Finished.')
             }
         },
-        genCsvData: function() {
+        genCsvData: function () {
             if (this.dataArrays.length) {
                 let stationNo
-                console.log('a')
                 for (let i = 0, len = this.dataArrays.length, headertmp; i < len; i++) {
                     stationNo = this.stationNoSelected[i]
                     this.csvData[i] = ''
@@ -157,7 +154,7 @@ let dataDownloadingBox = new Vue({
                 }
             }
         },
-        downloadCsv: function() {
+        downloadCsv: function () {
             if (!this.csvData.length) {
                 this.genCsvData()
             }
@@ -170,21 +167,21 @@ let dataDownloadingBox = new Vue({
                     downFile(this.csvData[i], stationName + '_' + dtBegStr + dtEndStr + '.csv')
                 }
             }
-        }
+        },
     },
     watch: {
-        dtBegStr: function() {
+        dtBegStr: function () {
             this.dataStatus = 0
         },
-        dtEndStr: function() {
+        dtEndStr: function () {
             this.dataStatus = 0
         },
-        stationNoSelected: function() {
+        stationNoSelected: function () {
             this.dataStatus = 0
-        }
+        },
     },
-    created: function() {
+    created: function () {
         this.dtBegStr = new Date().add(0, -24).Format('yyyy-MM-ddThh:mm')
         this.dtEndStr = new Date().Format('yyyy-MM-ddThh:mm')
-    }
+    },
 })

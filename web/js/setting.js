@@ -10,7 +10,7 @@ let settingProp = new Vue({
         legendNumMin: 0,
         legendNumMax: 30,
         //数据图表时间跨度限制（小时）
-        dataHour: 24,
+        dataHour: 24 * 3,
         dataHourMin: 1,
         dataHourMax: 24 * 30,
         //实况页关键列
@@ -20,27 +20,28 @@ let settingProp = new Vue({
 
         stations: [],
         cols: [],
-        colNames: []
+        colNames: [],
     },
     computed: {
-        colsByKeys: function() {
+        colsByKeys: function () {
             let colsByKeys = {}
             for (let i = 0, len = this.cols.length; i < len; i++) {
                 colsByKeys[this.cols[i].key] = this.cols[i]
             }
             return colsByKeys
-        }
+        },
     },
     methods: {
-        getColNames: function() {
+        getColNames: function () {
             let link
             let xhrColArr = []
             let colNames = []
             for (let stationNo = 0, stationNum = this.stations.length; stationNo < stationNum; stationNo++) {
-                link = '../php/qGET.php?q=SELECT en_name AS title, db_name AS `key`, unit FROM col_info WHERE station' + stationNo + '=1'
+                // link = '../php/qGET.php?q=SELECT en_name AS title, db_name AS `key`, unit FROM col_info WHERE station' + stationNo + '=1'
+                link = '../php/qGETcol.php?sta_i=' + stationNo
                 xhrColArr[stationNo] = new XMLHttpRequest()
                 xhrColArr[stationNo].open('GET', link, true)
-                xhrColArr[stationNo].onload = function() {
+                xhrColArr[stationNo].onload = function () {
                     if (this.status == 200) {
                         colNames = JSON.parse(this.responseText)
                         if (colNames['phpErrorCode'] != undefined) {
@@ -55,11 +56,12 @@ let settingProp = new Vue({
                 xhrColArr[stationNo].send()
             }
         },
-        getStations_getColNames: function() {
+        getStations_getColNames: function () {
             let stations
             let xhrStations = new XMLHttpRequest()
-            xhrStations.open('GET', '../php/qGET.php?q=SELECT * FROM station_info;', true)
-            xhrStations.onload = function() {
+            // xhrStations.open('GET', '../php/qGET.php?q=SELECT * FROM station_info;', true)
+            xhrStations.open('GET', '../php/qGETstaInfo.php', true)
+            xhrStations.onload = function () {
                 if (this.status == 200) {
                     stations = JSON.parse(this.responseText)
                     if (stations['phpErrorCode'] != undefined) {
@@ -70,9 +72,10 @@ let settingProp = new Vue({
                     settingProp.getColNames()
                     liveCard.stations = stations
                     if (isPC()) {
-                        genLiveMap()
+                        liveCard.liveMap = genLiveMap()
                     }
                     liveCard.refresh()
+                    loadingForward()
                     dataSearchBox.stations = stations
                     dataSearchBox.stationName = stations[0]['station_name2']
                     graphDataSearchBox.stations = stations
@@ -81,11 +84,12 @@ let settingProp = new Vue({
             }
             xhrStations.send()
         },
-        getCols_getStations_getColNames: function() {
+        getCols_getStations_getColNames: function () {
             let cols
             let xhrColAll = new XMLHttpRequest()
-            xhrColAll.open('GET', '../php/qGET.php?q=SELECT en_name AS title, db_name AS `key`, unit FROM col_info;', true)
-            xhrColAll.onload = function() {
+            // xhrColAll.open('GET', '../php/qGET.php?q=SELECT en_name AS title, db_name AS `key`, unit FROM col_info;', true)
+            xhrColAll.open('GET', '../php/qGETcol.php', true)
+            xhrColAll.onload = function () {
                 if (this.status == 200) {
                     cols = JSON.parse(this.responseText)
                     if (cols['phpErrorCode'] != undefined) {
@@ -98,15 +102,15 @@ let settingProp = new Vue({
                 }
             }
             xhrColAll.send()
-        }
+        },
     },
     watch: {
-        keyCols: function() {
+        keyCols: function () {
             liveCard.keyCols = this.keyCols
-        }
+        },
     },
-    created: function() {
+    created: function () {
         liveCard.keyCols = this.keyCols
         this.getCols_getStations_getColNames()
-    }
+    },
 })
