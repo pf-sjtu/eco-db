@@ -2,38 +2,52 @@
 #loadingProgress {
     height: 100%;
     width: 100%;
-    background: #fff;
-    /* padding-top: 4rem; */
+    background: #ffffff;
     z-index: 40;
     position: fixed;
 }
 #loadingProgressBox {
     width: 20rem;
-    height: 30rem;
-    margin: 6rem auto;
+    min-height: 24rem;
+    margin: 0 auto;
     color: #000;
-    font-family: Arial, Helvetica, sans-serif;
     text-align: center;
     overflow: hidden;
+    position: relative;
+    top: 50%; /*偏移*/
+    transform: translateY(-70%);
 }
 .loadingItem {
-    font-size: 1.2rem;
-    color: black;
+    font-size: 1rem;
+    color: #000;
     font-weight: 500;
     line-height: 2rem;
+    font-family: STKaiti, serif;
 }
-#loadingPageIcon {
-    font-size: 1rem;
-    font-weight: 700;
-    line-height: 1.6rem;
+#loadingPageIcon .name {
+    font-size: 1.3rem;
+    font-weight: 400;
+    line-height: 2rem;
+    display: block;
+    padding-top: 1rem;
+    font-family: STKaiti, serif;
 }
-#loadingPageIcon span {
-    font-size: 0.8rem;
-    font-weight: 600;
+#loadingPageIcon .enName {
+    font-family: Georgia, serif;
+    font-size: 1.1rem;
+    font-weight: 300;
+}
+#loadingPageIcon .enName span {
+    font-family: Georgia, serif;
+    font-size: 0.9rem;
+    font-weight: 200;
 }
 #loadingPageIcon img {
     width: 10rem;
     height: 10rem;
+}
+#loadingProgressBar{
+   width: 50%;
 }
 
 /* 整体 */

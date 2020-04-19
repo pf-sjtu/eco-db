@@ -68,8 +68,8 @@
                 <Row type="flex" justify="start" v-if="dataStatus">
                     <i-circle :percent="progress * 100" :stroke-color="dataColor" :size="40">
                         <span v-if="dataEmpty==-1" class="progressStr">{{ progressStr }}</span>
-                        <Icon v-if="dataEmpty==0" type="ios-close" size="30" style="color: #ff5500;"></Icon>
-                        <Icon v-if="dataEmpty==1" type="ios-checkmark" size="30" style="color: #5cb85c;"></Icon>
+                        <Icon v-if="dataEmpty==0" type="ios-close" :size="30" style="color: #ff5500;"></Icon>
+                        <Icon v-if="dataEmpty==1" type="ios-checkmark" :size="30" style="color: #5cb85c;"></Icon>
                     </i-circle>
                 </Row>
             </i-col>

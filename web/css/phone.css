@@ -76,3 +76,29 @@
 .graphBox2 {
     clear: both;
 }
+.uInfo th,
+.uInfo td {
+    font-size: 0.7rem;
+}
+.uInfo table {
+    margin: 0 auto;
+}
+.accountInfo {
+    width: 95%;
+}
+.accountInfo .loginOption {
+    margin: 0.2rem 0.1rem;
+}
+.uBox {
+    margin: 3rem 0.2rem;
+}
+.uBox .tips {
+    width: 95%;
+    clear: both;
+}
+.uBox .id,
+.uBox .username,
+.uBox .password,
+.uBox .address {
+    display: none;
+}

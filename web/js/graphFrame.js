@@ -39,13 +39,13 @@ let graphDataSearchBox = new Vue({
         dataSpan: {}
     },
     computed: {
-        settingReady: function() {
+        settingReady: function () {
             if (this.dtBegStr != '' && this.dtEndStr != '' && this.dtBegStr < this.dtEndStr && this.selectedStations.length && this.colKeySelected.length) {
                 return true
             }
             return false
         },
-        colDisplayArr: function() {
+        colDisplayArr: function () {
             let cmpKey = genCmpFunc('key')
             let colArr = []
             if (this.setMode == 'mode0') {
@@ -78,7 +78,7 @@ let graphDataSearchBox = new Vue({
             }
             return colArr
         },
-        colSelected: function() {
+        colSelected: function () {
             let colSelected = []
             for (let i = 0, len = this.colKeySelected.length; i < len; i++) {
                 colSelected.push(settingProp.colsByKeys[this.colKeySelected[i]])
@@ -87,22 +87,23 @@ let graphDataSearchBox = new Vue({
         }
     },
     methods: {
+        eAuth: eAuth,
         isPC: isPC,
-        changeSetting: function() {
+        changeSetting: function () {
             this.settingChange = !this.settingChange
         },
-        changeDataSetting: function() {
+        changeDataSetting: function () {
             this.dataReady = false
             this.graphDataReady = false
             this.graphReady = false
             this.changeSetting()
         },
-        changeGraphDataSetting: function() {
+        changeGraphDataSetting: function () {
             this.graphDataReady = false
             this.graphReady = false
             this.changeSetting()
         },
-        getDataSimplified: function() {
+        getDataSimplified: function () {
             let pointNum = settingProp.pointNum
             let stationTb, link, data
             let xhr = []
@@ -111,7 +112,7 @@ let graphDataSearchBox = new Vue({
                 link = '../php/qGETsimpData.php?table_name=' + stationTb + '&dtBegStr=' + this.dtBegStr + '&dtEndStr=' + this.dtEndStr + '&num=' + pointNum
                 xhr[stationNo] = new XMLHttpRequest()
                 xhr[stationNo].open('GET', link, true)
-                xhr[stationNo].onload = function() {
+                xhr[stationNo].onload = function () {
                     if (this.status == 200) {
                         data = JSON.parse(this.responseText)
                         if (data['phpErrorCode'] != undefined) {
@@ -142,7 +143,7 @@ let graphDataSearchBox = new Vue({
                 xhr[stationNo].send()
             }
         },
-        genDataSpan: function() {
+        genDataSpan: function () {
             let dataSpan = {},
                 tmp,
                 keys,
@@ -182,7 +183,7 @@ let graphDataSearchBox = new Vue({
             // console.log(dataSpan);
             this.dataSpan = dataSpan
         },
-        updateGraph: function() {
+        updateGraph: function () {
             let data = this.dataSimplified
             colRate = {}
             for (let i = 0, len = this.colSelected.length; i < len; i++) {
@@ -334,7 +335,7 @@ let graphDataSearchBox = new Vue({
             console.log('updateGraph')
             // genGraph();
         },
-        genGraph: function() {
+        genGraph: function () {
             if (this.graphDataReady && this.graphOption.legend.data.length) {
                 this.graphReady = true
                 let dom = document.getElementById(this.graphFrameID)
@@ -349,29 +350,29 @@ let graphDataSearchBox = new Vue({
     },
     watch: {
         // 需要重新读取数据的
-        dtBegStr: function() {
+        dtBegStr: function () {
             this.changeDataSetting()
         },
-        dtEndStr: function() {
+        dtEndStr: function () {
             this.changeDataSetting()
         },
-        selectedStations: function() {
+        selectedStations: function () {
             this.changeDataSetting()
         },
         // 需要重新生成数据矩阵的
-        colKeySelected: function() {
+        colKeySelected: function () {
             if (this.colKeySelected.length) {
                 this.changeGraphDataSetting()
             }
         },
-        colRate: function() {
+        colRate: function () {
             this.changeGraphDataSetting()
         },
-        xAxis: function() {
+        xAxis: function () {
             this.changeGraphDataSetting()
         },
         // 需要进行个别图像设置的
-        graphSmooth: function() {
+        graphSmooth: function () {
             if (this.graphDataReady) {
                 for (let i = 0, len = this.graphOption.series.length; i < len; i++) {
                     this.graphOption.series[i].smooth = this.graphSmooth
@@ -381,12 +382,12 @@ let graphDataSearchBox = new Vue({
         },
 
         // 响应函数
-        settingChange: function() {
+        settingChange: function () {
             if (this.settingReady && !this.dataReady) {
                 this.getDataSimplified()
             }
         },
-        dataReady: function() {
+        dataReady: function () {
             if (this.dataReady) {
                 this.genDataSpan()
                 if (!this.graphDataReady) {
@@ -395,14 +396,14 @@ let graphDataSearchBox = new Vue({
                 }
             }
         },
-        graphDataReady: function() {
+        graphDataReady: function () {
             if (this.dataReady && !this.graphDataReady) {
                 this.updateGraph()
                 this.genGraph()
             }
         }
     },
-    created: function() {
+    created: function () {
         this.dtBegStr = new Date().add(0, -24).Format('yyyy-MM-ddThh:mm')
         this.dtEndStr = new Date().Format('yyyy-MM-ddThh:mm')
     }

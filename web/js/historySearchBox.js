@@ -9,7 +9,7 @@ let dataSearchBox = new Vue({
         colNames: [],
         colLen: 0,
         dataLen: 0,
-        tabUnitCols: [],
+        tabUnitCols: []
     },
     computed: {
         stationNo: function () {
@@ -19,9 +19,10 @@ let dataSearchBox = new Vue({
                 }
             }
             return 0
-        },
+        }
     },
     methods: {
+        eAuth: eAuth,
         isPC: isPC,
         queryDetailLimited: function () {
             let dtBeg = new Date(this.dtBegStr)
@@ -97,11 +98,15 @@ let dataSearchBox = new Vue({
                     tabElem.innerHTML = htmlTab(dataSearchBox.tabUnitCols, data)
                     let dataElem = tabElem.getElementsByClassName('dataTable')[0]
                     dataElem.removeEventListener('scroll', dataTabScrollSync)
-                    dataElem.addEventListener('scroll', dataTabScrollSync)
+                    dataElem.addEventListener('scroll', dataTabScrollSync, {
+                        capture: false,
+                        passive: true,
+                        once: false
+                    })
                 }
             }
             xhr2.send()
-        },
+        }
     },
     watch: {
         dtBegStr: function () {
@@ -109,12 +114,12 @@ let dataSearchBox = new Vue({
         },
         dtEndStr: function () {
             this.dataReady = false
-        },
+        }
     },
     created: function () {
         this.dtBegStr = new Date().add(0, -24).Format('yyyy-MM-ddThh:mm')
         this.dtEndStr = new Date().Format('yyyy-MM-ddThh:mm')
-    },
+    }
 })
 
 function dataTabScrollSync() {

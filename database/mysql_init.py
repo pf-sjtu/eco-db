@@ -27,6 +27,8 @@ from utils.color_log import Logger
 add_id = False
 insert_methods = ["LOCAL INFILE", "INFILE"]
 insert_method = insert_methods[0]
+id_methods = ["IDENTIFIED WITH mysql_native_password BY", "IDENTIFIED BY"]
+id_method = id_methods[0]
 
 # 打开数据库连接
 def connect_db(root_database=False):
@@ -34,12 +36,12 @@ def connect_db(root_database=False):
     if root_database:
         db_name = "mysql"
     db = MySQLdb.connect(
-        host=db_config["host"],
-        port=db_config["port"],
-        user=db_config["user"],
-        passwd=db_config["passwd"],
+        host=db_config["root"]["host"],
+        port=db_config["root"]["port"],
+        user=db_config["root"]["user"],
+        passwd=db_config["root"]["passwd"],
         db=db_name,
-        charset="utf8",
+        charset="utf8mb4",
     )
     return db
 
@@ -95,7 +97,7 @@ def insert_to_db(db, csv_dir, db_table_name, col_name_series, replace=False):
     method = "REPLACE" if replace else "IGNORE"
     try:
         sql_insert = """
-            LOAD DATA {} '{}' 
+            LOAD DATA {} '{}'
                 {} INTO TABLE {}
                 CHARACTER SET utf8
                 FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' ESCAPED BY '\"' LINES TERMINATED by '{}'
@@ -114,7 +116,7 @@ def insert_to_db(db, csv_dir, db_table_name, col_name_series, replace=False):
         )
         insert_method = insert_methods[1]
         sql_insert = """
-            LOAD DATA {} '{}' 
+            LOAD DATA {} '{}'
                 {} INTO TABLE {}
                 CHARACTER SET utf8
                 FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' ESCAPED BY '\"' LINES TERMINATED by '{}'
@@ -154,6 +156,129 @@ def delete_table(db, table_name_str):
     db_cursor.execute(sql_drop)
     # print("成功删除表{}。".format(table_name_str))
     print("Successfully dropped table {}.".format(table_name_str))
+
+
+def init_authority_tables(db):
+    db_cursor = db.cursor()
+    db_cursor.execute("SHOW TABLES; ")
+    tables = [i[0] for i in db_cursor.fetchall()]
+    if "member" in tables:
+        Logger.log_warn(
+            "WARNING:", "Table 'member' already exists.",
+        )
+    else:
+        db_cursor.execute(
+            """
+CREATE TABLE IF NOT EXISTS `member`(
+  `id` INT(11) UNSIGNED PRIMARY KEY auto_increment,
+  `username` VARCHAR(50) NOT NULL,
+  `password` VARCHAR(50) NOT NULL,
+  `question_id` TINYINT(1) UNSIGNED NOT NULL,
+  `answer` VARCHAR(50) NOT NULL,
+  `truename` VARCHAR(50) DEFAULT NULL,
+  `address` VARCHAR(50) DEFAULT NULL,
+  `email` VARCHAR(50) NOT NULL,
+  `authority` TINYINT(1) UNSIGNED DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `member` (`username`, `password`, `question_id`, `answer`, `truename`, `address`, `email`, `authority`) VALUES
+    ('admin', '123123', '1', 'answer', '管理员', '上海交通大学农业与生物学院', 'admin@surfes', '3'),
+    ('visitor', 'visitor', '1', 'answer', '访客', '访客', 'visitor@surfes', '1'),
+    ('freeze', 'freeze', '1', 'answer', '冻结测试账户', '冻结测试账户',  'freeze@surfes', '0');"""
+        )
+    if "question" in tables:
+        Logger.log_warn(
+            "WARNING:", "Table 'question' already exists.",
+        )
+    else:
+        db_cursor.execute(
+            """
+CREATE TABLE IF NOT EXISTS `question` (
+  `id` TINYINT(1) UNSIGNED PRIMARY KEY auto_increment,
+  `question` VARCHAR(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `question` (`question`) VALUES
+    ("您祖母叫什么名字？"), ("您祖父叫什么名字？"), ("您的生日是什么时候？（例如：1980/01/01）"),
+    ("您母亲的名字？"), ("您父亲的名字？"), ("您宠物的名字叫什么？"), ("您的车号是什么？"),
+    ("您的家乡是哪里？"), ("您的小学叫什么名字？"), ("您最喜欢的颜色？"),
+    ("您女儿/儿子的小名叫什么？"), ("谁是您儿时最好的伙伴？"), ( "您最尊敬的老师的名字？");"""
+        )
+    if "auth" in tables:
+        Logger.log_warn(
+            "WARNING:", "Table 'auth' already exists.",
+        )
+    else:
+        db_cursor.execute(
+            """
+CREATE TABLE IF NOT EXISTS `auth` (
+  `id` INT(1) UNSIGNED PRIMARY KEY auto_increment,
+  `contentID` VARCHAR(50) NOT NULL,
+	`authLevel` TINYINT(1) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `auth` (`contentID`, `authLevel`) VALUES
+	('about', 1),
+	('account', 1),
+	('footingInfo', 1),
+	('live', 1),
+	('historyTable', 2),
+	('historyGraph', 2),
+	('download', 2),
+	('setting', 1),
+	('afterLoad', 1);"""
+        )
+
+
+def create_user(db):
+    global id_methods, id_method
+    db_cursor = db.cursor()
+    db_cursor.execute(
+        "SELECT DISTINCT CONCAT('''',user,'''@''',host,'''') AS query FROM mysql.user;"
+    )
+    users = [i[0] for i in db_cursor.fetchall()]
+
+    user_names = [i for i in db_config.keys() if i != "root"]
+    for user_name in user_names:
+        user_name_full = "'{}'@'{}'".format(user_name, "localhost")
+        if user_name_full in users:
+            Logger.log_warn(
+                "WARNING:", "user {} already exists.".format(user_name_full),
+            )
+        else:
+            try:
+                db_cursor.execute(
+                    "CREATE USER {} {} '{}';".format(
+                        user_name_full, id_method, db_config[user_name]["passwd"]
+                    )
+                )
+            except MySQLdb.OperationalError as e:
+                Logger.log_warn(
+                    "WARNING:",
+                    "current method applied to create a user caused an error, change the method from {} to {}. {}.".format(
+                        id_method, id_methods[1], e
+                    ),
+                )
+                id_method = id_methods[1]
+                db_cursor.execute(
+                    "CREATE USER {} {} '{}';".format(
+                        user_name_full, id_method, db_config[user_name]["passwd"]
+                    )
+                )
+            Logger.log_normal("USER:", "add user {}.".format(user_name_full))
+    webUser_table = list(station_info["db_table_name"]) + ["col_info", "station_info"]
+    loginAssistant_table = ["member", "question", "auth"]
+    privilege_args = [(i, "webUser") for i in webUser_table] + [
+        (i, "loginAssistant") for i in loginAssistant_table
+    ]
+    for args in privilege_args:
+        db_cursor.execute(
+            "GRANT SELECT ON station_db.{} TO '{}'@'localhost';".format(
+                args[0], args[1]
+            )
+        )
+    db_cursor.execute("FLUSH PRIVILEGES;")
+    Logger.log_normal("USER:", "privileges flushed.")
 
 
 def init_db():
@@ -205,26 +330,8 @@ def init_db():
         tb_name = station_info.loc[ii, "db_table_name"]
         creat_table(db_cursor, tb_name, tb_cols["en_name"], tb_cols["type"])
 
-    # add webUser
-    db_cursor.execute(
-        "SELECT DISTINCT CONCAT('''',user,'''@''',host,'''') AS query FROM mysql.user;"
-    )
-    users = [i[0] for i in db_cursor.fetchall()]
-    if "'webUser'@'localhost'" not in users:
-        try:
-            db_cursor.execute(
-                "CREATE USER 'webUser' @'localhost' IDENTIFIED WITH mysql_native_password BY '516150910019';"
-            )
-        except MySQLdb.OperationalError as e:
-            db_cursor.execute(
-                "CREATE USER 'webUser' @'localhost' IDENTIFIED WITH mysql_native_password BY '516150910019';"
-            )
-        Logger.log_normal("USER:", "Add user webUser.")
-    db_cursor.execute(
-        """GRANT SELECT ON station_db.* TO 'webUser' @'localhost';
-        FLUSH PRIVILEGES;"""
-    )
-    Logger.log_normal("USER:", "Privileges flushed.")
+    init_authority_tables(db)
+    create_user(db)
 
     close_db(db)
     rm_tmp()

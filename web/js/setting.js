@@ -20,7 +20,7 @@ let settingProp = new Vue({
 
         stations: [],
         cols: [],
-        colNames: [],
+        colNames: []
     },
     computed: {
         colsByKeys: function () {
@@ -29,9 +29,10 @@ let settingProp = new Vue({
                 colsByKeys[this.cols[i].key] = this.cols[i]
             }
             return colsByKeys
-        },
+        }
     },
     methods: {
+        eAuth: eAuth,
         getColNames: function () {
             let link
             let xhrColArr = []
@@ -48,9 +49,15 @@ let settingProp = new Vue({
                             console.log('INIT-colNames[' + stationNo + ']: phpErrorCode', colNames['phpErrorCode'])
                             colNames = []
                         }
-                        dataSearchBox.colNames[stationNo] = colNames
-                        graphDataSearchBox.colNames[stationNo] = colNames
-                        dataDownloadingBox.colNames[stationNo] = colNames
+                        if (eAuth('historyTable')) {
+                            dataSearchBox.colNames[stationNo] = colNames
+                        }
+                        if (eAuth('historyGraph')) {
+                            graphDataSearchBox.colNames[stationNo] = colNames
+                        }
+                        if (eAuth('download')) {
+                            dataDownloadingBox.colNames[stationNo] = colNames
+                        }
                     }
                 }
                 xhrColArr[stationNo].send()
@@ -70,16 +77,25 @@ let settingProp = new Vue({
                     }
                     settingProp.stations = stations
                     settingProp.getColNames()
-                    liveCard.stations = stations
-                    if (isPC()) {
-                        liveCard.liveMap = genLiveMap()
+                    if (eAuth('live')) {
+                        liveCard.stations = stations
+                        if (isPC()) {
+                            liveCard.liveMap = genLiveMap()
+                        }
+                        loadingForward()
+                        liveCard.refresh()
                     }
-                    liveCard.refresh()
-                    loadingForward()
-                    dataSearchBox.stations = stations
-                    dataSearchBox.stationName = stations[0]['station_name2']
-                    graphDataSearchBox.stations = stations
-                    dataDownloadingBox.stations = stations
+                    if (eAuth('historyTable')) {
+                        dataSearchBox.stations = stations
+                        dataSearchBox.stationName = stations[0]['station_name2']
+                    }
+                    if (eAuth('historyGraph')) {
+                        graphDataSearchBox.stations = stations
+                    }
+                    if (eAuth('download')) {
+                        dataDownloadingBox.stations = stations
+                    }
+                    // console.log('Finished Deploying.')
                 }
             }
             xhrStations.send()
@@ -102,15 +118,15 @@ let settingProp = new Vue({
                 }
             }
             xhrColAll.send()
-        },
+        }
     },
     watch: {
         keyCols: function () {
             liveCard.keyCols = this.keyCols
-        },
+        }
     },
     created: function () {
         liveCard.keyCols = this.keyCols
         this.getCols_getStations_getColNames()
-    },
+    }
 })

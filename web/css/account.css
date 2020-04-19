@@ -1,0 +1,225 @@
+.full {
+    width: 100%;
+    height: 90%;
+    margin: 0;
+    padding: 0;
+}
+.uForm {
+    width: 21rem;
+    min-height: 5rem;
+    margin: 1rem auto;
+    border: 2px solid rgb(67, 173, 243);
+    padding-bottom: 2rem;
+}
+.loginForm {
+    position: relative;
+    top: 50%; /*偏移*/
+    transform: translateY(-50%);
+}
+.tBox {
+    width: 15rem;
+}
+.tLabel {
+    width: 8rem;
+    text-align: left;
+    display: block;
+}
+.showPwd,
+.loginOption {
+    user-select: none;
+}
+.uTitle {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: dimgrey;
+}
+.formOption {
+    text-align: center;
+    margin: 1rem 0;
+}
+.formOption2 {
+    text-align: right;
+    margin: 2rem 1rem;
+    font-size: 0.8rem;
+}
+.t,
+.tLine {
+    width: 17rem;
+    padding: 0.5rem 1rem;
+    margin: 0.7rem auto;
+    display: block;
+    text-align: left;
+    border: 1px solid rgb(225, 228, 238);
+    border-radius: 0.5rem;
+}
+.t {
+    height: 3rem;
+}
+.uIcon {
+    float: left;
+}
+.uIcon .ivu-icon {
+    font-size: 5rem;
+}
+.uBox {
+    clear: both;
+}
+.accountInfo {
+    height: 5.2rem;
+    margin: 2rem auto;
+    border: 1px solid rgb(225, 228, 238);
+    font-size: 1rem;
+}
+.accountInfo .name {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+.accountInfo .uIcon {
+    width: 5rem;
+    height: 5.2rem;
+    background-color: rgb(225, 228, 238);
+}
+.accountInfo .uOption {
+    padding: 0.5rem;
+    margin: 0 6rem;
+    width: 100%;
+}
+.accountInfo .loginOption {
+    padding: 0.1rem 0.4rem;
+    display: inline-block;
+    border: 1px solid rgb(225, 228, 238);
+    border-left: 5px solid rgb(225, 228, 238);
+}
+.uBox .title {
+    font-size: 1.5rem;
+    border-bottom: 1px solid rgb(225, 228, 238);
+    margin: 1.2rem 0rem;
+}
+.uBox .tips {
+    padding: 0.5rem;
+    background-color: rgb(238, 248, 255);
+    border-left: 5px solid rgb(200, 220, 255);
+}
+.uBox .tips .tw {
+    font-size: 1.2rem;
+    float: left;
+}
+.uBox .tips .tc {
+    float: left;
+    font-size: 0.9rem;
+    margin: 0.2rem 0;
+}
+
+.uInfo th,
+.uInfo td {
+    padding: 0.2rem 0;
+    min-width: 5rem;
+    min-height: 1.7rem;
+    padding: 0.2rem 0;
+    margin: 0;
+    text-align: center;
+}
+.uInfo th {
+    background-color: rgb(233, 238, 241);
+    font-weight: 500;
+}
+.uInfo td {
+    background-color: rgb(228, 248, 255);
+    font-weight: 300;
+}
+.uInfo table {
+    padding: 0;
+    border-collapse: collapse;
+    float: left;
+}
+
+.accountAuth th,
+.accountAuth td {
+    display: block;
+    padding: 10px 15px;
+}
+.accountAuth tr {
+    display: block;
+    float: left;
+}
+.accountAuth th {
+    border-right: 3px solid rgb(100, 100, 100);
+    border-bottom: 1px solid rgb(100, 100, 100);
+}
+.accountAuth td {
+    border-bottom: 1px solid rgb(100, 100, 100);
+}
+.accountAuth th:first-child {
+    border-top: 1px solid rgb(100, 100, 100);
+}
+.accountAuth td:first-child {
+    border-top: 1px solid rgb(100, 100, 100);
+}
+
+.clearFloat {
+    clear: both;
+}
+
+#userMan table {
+    border-bottom: 5px solid rgb(61, 126, 154);
+}
+#userMan input {
+    width: 3rem;
+    background-color: transparent;
+    border: 0;
+    text-align: center;
+}
+#userMan th,
+#userMan td {
+    padding: 0.4rem 0.4rem;
+    border-top: 1px solid rgb(100, 100, 100);
+}
+#userMan tr td:first-child {
+    border-right: 3px solid rgb(100, 100, 100);
+}
+#userMan tr th:first-child {
+    border-right: 3px solid rgb(100, 100, 100);
+}
+#userMan .formOption {
+    clear: both;
+    margin: 0;
+    padding: 0 1rem;
+    text-align: left;
+}
+#userMan #formReset,
+#userMan #formSubmit {
+    background-color: rgb(61, 126, 154);
+    color: #fff;
+    padding: 0.5rem 1.7rem;
+    margin: 0 -0.5rem;
+    width: 5rem;
+    border-radius: 0 0 1.5rem 0.5rem;
+}
+#userMan #formSubmit {
+    background-color: rgba(61, 126, 154, 0.7);
+}
+
+.uForm .title {
+    font-size: 1rem;
+    width: 100%;
+    height: 3rem;
+    background-color: rgb(67, 173, 243);
+    display: inline-block;
+    color: #fff;
+    font-size: 1.2rem;
+    font-style: italic;
+}
+.uForm .title span {
+    font-size: 0.8rem;
+    font-style: normal;
+}
+.uForm .icon {
+    width: 2rem;
+    height: 2rem;
+    margin: 0.5rem 0 0.5rem 1rem;
+    float: left;
+}
+.center {
+    text-align: center;
+}

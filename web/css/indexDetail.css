@@ -22,10 +22,6 @@
     font-weight: 500;
     text-align: right;
 }
-/* .bold{
-    font-weight: bold;
-    text-align: right;
-} */
 .center {
     text-align: center;
 }
@@ -163,4 +159,26 @@ h2 {
 #dataTab .dataTable tr:nth-child(2n),
 #dataTab .dataTableLeft tr:nth-child(2n) {
     background-color: #efefef;
+}
+.settingBox .title {
+    font-size: 1rem;
+    border-bottom: 1px solid rgb(225, 228, 238);
+    margin: 1.2rem 0rem;
+}
+.loadingProgressFade {
+    animation-name: loadingProgressFade;
+    animation-duration: 0.5s;
+}
+@keyframes loadingProgressFade {
+    0% {
+        opacity: 1;
+    }
+    15% {
+        background: rgb(67, 173, 243);
+        opacity: 1;
+    }
+    100% {
+        background: #fff;
+        opacity: 0;
+    }
 }

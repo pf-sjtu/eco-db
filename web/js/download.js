@@ -13,7 +13,7 @@ let dataDownloadingBox = new Vue({
         xhrCur: [],
         xhrCount: 0,
         xhrFinishedCount: 0,
-        dataStatus: 0,
+        dataStatus: 0
     },
     computed: {
         progress: function () {
@@ -47,9 +47,10 @@ let dataDownloadingBox = new Vue({
         dataColor: function () {
             let colors = ['#43adf3', '#ff5500', '#5cb85c']
             return colors[this.dataEmpty + 1]
-        },
+        }
     },
     methods: {
+        eAuth: eAuth,
         isPC: isPC,
         requestData: function () {
             if (this.stationNoSelected.length) {
@@ -71,7 +72,7 @@ let dataDownloadingBox = new Vue({
                         dtBeg: dtBeg,
                         dtEnd: dtEnd,
                         dtBegStr: dtBeg.Format('yyyy-MM-dd hh:mm'),
-                        dtEndStr: dtEnd.Format('yyyy-MM-dd hh:mm'),
+                        dtEndStr: dtEnd.Format('yyyy-MM-dd hh:mm')
                     }
                     this.dataArrays[stationKey] = []
                     stationTb = this.stations[this.stationNoSelected[stationKey]].db_table_name
@@ -167,7 +168,7 @@ let dataDownloadingBox = new Vue({
                     downFile(this.csvData[i], stationName + '_' + dtBegStr + dtEndStr + '.csv')
                 }
             }
-        },
+        }
     },
     watch: {
         dtBegStr: function () {
@@ -178,10 +179,10 @@ let dataDownloadingBox = new Vue({
         },
         stationNoSelected: function () {
             this.dataStatus = 0
-        },
+        }
     },
     created: function () {
         this.dtBegStr = new Date().add(0, -24).Format('yyyy-MM-ddThh:mm')
         this.dtEndStr = new Date().Format('yyyy-MM-ddThh:mm')
-    },
+    }
 })

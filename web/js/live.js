@@ -9,7 +9,7 @@ let liveCard = new Vue({
         lastLines: [],
         statusCounter: 0,
         emptyPlaceHolder: '--',
-        liveMap: {},
+        liveMap: {}
     },
     computed: {
         stationInfo: function () {
@@ -40,9 +40,10 @@ let liveCard = new Vue({
                 }
             }
             return stationInfo
-        },
+        }
     },
     methods: {
+        eAuth: eAuth,
         isPC: isPC,
         refresh: function () {
             let stationTb, linkFirst, linkLast
@@ -88,16 +89,18 @@ let liveCard = new Vue({
             }
         },
         jumpDetail: function (stationName2, dtBegStr) {
-            dataSearchBox.stationName = stationName2
-            let tmp = dtBegStr.replace(' ', 'T').split(':')
-            tmp.length = 2
-            dtBegStr = tmp.join(':')
-            dataSearchBox.dtBegStr = dtBegStr
-            dataSearchBox.dtEndStr = dtBegStr
-            topNav.updateHiddenState(2)
-            dataSearchBox.queryDetailLimited()
-        },
-    },
+            if (this.eAuth('historyTable')) {
+                dataSearchBox.stationName = stationName2
+                let tmp = dtBegStr.replace(' ', 'T').split(':')
+                tmp.length = 2
+                dtBegStr = tmp.join(':')
+                dataSearchBox.dtBegStr = dtBegStr
+                dataSearchBox.dtEndStr = dtBegStr
+                topNav.updateHiddenState(2)
+                dataSearchBox.queryDetailLimited()
+            }
+        }
+    }
 })
 
 function genLiveMap() {
@@ -105,7 +108,7 @@ function genLiveMap() {
     for (let i = 0, len = liveCard.stations.length; i < len; i++) {
         tmp = {
             name: liveCard.stations[i]['station_name2'],
-            value: geoCoordConvert([liveCard.stations[i]['longitude'], liveCard.stations[i]['latitude']]),
+            value: geoCoordConvert([liveCard.stations[i]['longitude'], liveCard.stations[i]['latitude']])
         }
 
         stationSeries.push(tmp)
@@ -116,28 +119,28 @@ function genLiveMap() {
     option = {
         tooltip: {
             trigger: 'item',
-            formatter: '{b}',
+            formatter: '{b}'
         },
         geo: {
             map: '上海',
             label: {
                 normal: {
-                    show: false,
+                    show: false
                 },
                 emphasis: {
-                    show: false,
-                },
+                    show: false
+                }
             },
             roam: false,
             itemStyle: {
                 normal: {
                     areaColor: '#d5e0eb',
-                    borderColor: '#fff',
+                    borderColor: '#fff'
                 },
                 emphasis: {
-                    areaColor: '#abcdef',
-                },
-            },
+                    areaColor: '#abcdef'
+                }
+            }
         },
         series: [
             {
@@ -148,7 +151,7 @@ function genLiveMap() {
                     color: '#43adf3',
                     period: 6,
                     scale: 3,
-                    brushType: 'stroke',
+                    brushType: 'stroke'
                 },
                 coordinateSystem: 'geo',
                 data: stationSeries,
@@ -159,26 +162,26 @@ function genLiveMap() {
                         formatter: '{b}',
                         fontSize: 14,
                         position: 'left',
-                        color: '#0099ff',
+                        color: '#0099ff'
                     },
                     emphasis: {
                         show: true,
                         fontSize: 14,
                         position: 'left',
-                        color: '#896800',
-                    },
+                        color: '#896800'
+                    }
                 },
                 itemStyle: {
                     normal: {
-                        color: '#43adf3',
+                        color: '#43adf3'
                     },
                     emphasis: {
                         borderColor: '#896800',
-                        borderWidth: 3,
-                    },
-                },
-            },
-        ],
+                        borderWidth: 3
+                    }
+                }
+            }
+        ]
     }
 
     myChart.setOption(option)
