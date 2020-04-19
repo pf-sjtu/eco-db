@@ -66,7 +66,7 @@
             loadingForward()
         </script>
         <script type="text/javascript" src="js/pfUtils.js"></script>
-        <?php require_once("account/qureyAuth.php") ?>
+        <?php require_once("account/queryAuth.php") ?>
         <script type="text/javascript" src="js/layout.js"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/view-design@4.1.3/dist/styles/iview.css" />
         <!-- <link rel="stylesheet" type="text/css" href="ext/viewui/iview.css"> -->

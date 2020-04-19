@@ -252,7 +252,7 @@ def create_user(db):
                         user_name_full, id_method, db_config[user_name]["passwd"]
                     )
                 )
-            except MySQLdb.OperationalError as e:
+            except MySQLdb.ProgrammingError as e:
                 Logger.log_warn(
                     "WARNING:",
                     "current method applied to create a user caused an error, change the method from {} to {}. {}.".format(
@@ -277,6 +277,7 @@ def create_user(db):
                 args[0], args[1]
             )
         )
+    db_cursor.execute("GRANT UPDATE, INSERT, DELETE ON `station_db`.`member` TO 'loginAssistant'@'localhost';")
     db_cursor.execute("FLUSH PRIVILEGES;")
     Logger.log_normal("USER:", "privileges flushed.")
 

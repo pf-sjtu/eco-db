@@ -69,6 +69,7 @@
             exit;
         }
 
+        $_SESSION['username'] = $user_name;
         mysqli_query($conn, "UPDATE `member` SET `username`='$user_name',`password`='$password',`question_id`=$question,`answer`='$answer',`truename`='$true_name',`address`='$address',`email`='$email' WHERE `id`='$ID'");
     }
     ?>
@@ -80,7 +81,9 @@
         <p class="uTitle">账号信息修改成功</p>
         <p class="center">恭喜您！您已成功修改账号信息。</p>
         <div class="formOption2">
-            <a class='loginOption' href='logout.php'>注销账号</a>
+            <a class='loginOption' href='logout.php'>重新登陆</a>
+            <?php
+            ?>
             <a class='loginOption' href='../home.php'>返回SURFES</a>
         </div>
     </div>

@@ -46,7 +46,7 @@ $name = wName($username);
             </div>
             <div class="tc" <?php echo ($auth < 2 && $username != "visitor") ? "" : "hidden"; ?>>
                 <p>若需获得所有权限，请联系管理员。</p>
-                <p><a target="_blank" href="mailto:<?php require_once('account\echoAdminEmail.php'); ?>"><?php echo $adminEmail; ?></a></p>
+                <p><a target="_blank" href="mailto:<?php require_once('account/echoAdminEmail.php'); ?>"><?php echo $adminEmail; ?></a></p>
             </div>
             <div class="tc" <?php echo ($auth == 2) ? "" : "hidden"; ?>>
                 <p>您已获得所有模块的查看权限。</p>
