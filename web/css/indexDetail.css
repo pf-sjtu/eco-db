@@ -83,9 +83,12 @@ h2 {
     font-size: 1.1rem;
     padding-right: 0.5rem;
 }
-.sub {
+.aboutCard1 .sub {
     font-size: 0.7rem;
     font-weight: lighter;
+}
+.aboutCard1 .cap {
+    font-size: 1rem;
 }
 .name {
     padding-right: 0.5rem;

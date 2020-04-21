@@ -24,7 +24,7 @@
                 <img src="pic/icon2.small.png" alt="" /><br />
                 <p class="name">上海城市森林生态站数据库系统</p>
                 <p class="enName">
-                    S<span>hanghai</span> UR<span>ban</span> F<span>orest</span> E<span>cosystem research</span> S<span>tation</span> <span>database</span>
+                    <span class="sub">Database Management System of </span><br /><span class="cap">S</span><span class="sub">hanghai </span><span class="cap">UR</span><span class="sub">ban </span><span class="cap">F</span><span class="sub">orest </span><span class="cap">E</span><span class="sub">cosystem </span><span class="cap">S</span><span class="sub">tation</span>
                 </p>
             </div>
             <br /><br />

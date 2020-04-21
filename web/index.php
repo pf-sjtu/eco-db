@@ -27,7 +27,12 @@
     $name = wName($username);
     ?>
     <div class="uForm">
-        <p><?php echo $name; ?>您好!您已经登录到SURFES系统，您可以：<br /></p>
+        <div class="title">
+            <img class="icon" src="pic/icon2.dark.small.png" alt="" />
+            <p>SURFES<span>上海城市森林生态站数据库系统</span></p>
+        </div>
+        <p class="name"><?php echo $name; ?>，</p>
+        <p class="tips">您好！您已经登录到SURFES系统，接下来可以：<br /></p>
         <div class="formOption2">
             <a class='loginOption' href='home.php'>进入系统</a>
             <a class='loginOption' href='account/logout.php'>注销</a>

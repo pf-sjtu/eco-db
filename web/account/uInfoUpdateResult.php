@@ -81,7 +81,7 @@
         <p class="uTitle">账号信息修改成功</p>
         <p class="center">恭喜您！您已成功修改账号信息。</p>
         <div class="formOption2">
-            <a class='loginOption' href='logout.php'>重新登陆</a>
+            <a class='loginOption' href='logout.php'>重新登录</a>
             <?php
             ?>
             <a class='loginOption' href='../home.php'>返回SURFES</a>

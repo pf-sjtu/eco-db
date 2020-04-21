@@ -32,14 +32,14 @@
     padding-top: 1rem;
     font-family: STKaiti, serif;
 }
-#loadingPageIcon .enName {
+#loadingPageIcon .enName .cap{
     font-family: Georgia, serif;
     font-size: 1.1rem;
     font-weight: 300;
 }
-#loadingPageIcon .enName span {
+#loadingPageIcon .enName .sub {
     font-family: Georgia, serif;
-    font-size: 0.9rem;
+    font-size: 0.7rem;
     font-weight: 200;
 }
 #loadingPageIcon img {
@@ -118,3 +118,4 @@ body {
     color: rgba(0, 0, 0, 0.4);
     text-decoration: none;
 }
+

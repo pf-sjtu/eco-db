@@ -22,7 +22,7 @@
             <img class="icon" src="pic/icon2.dark.small.png" alt="" />
             <p>SURFES<span>上海城市森林生态站数据库系统</span></p>
         </div>
-        <p class="uTitle">登陆系统</p>
+        <p class="uTitle">登录系统</p>
         <p class="t">
             <label class="tLabel" for="user_name">用户名：</label>
             <input class="tBox" type="text" name="user_name" id="user_name" autocomplete="nickname" pattern="[0-9a-zA-Z_]{3,50}" placeholder="3-50位数字、字母下划线" title="请输入3-50位数字、字母下划线" required>*

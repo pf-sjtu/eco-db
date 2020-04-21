@@ -42,7 +42,7 @@
                     $_SESSION['username'] = $info['username'];
                     $_SESSION['id'] = $info['id'];
                     $_SESSION['auth'] = $info['authority'];
-                    echo "<script>alert('登陆成功');</script>";
+                    echo "<script>alert('登录成功');</script>";
                     header("location:../home.php");
                     exit;
                 } else {
