@@ -37,7 +37,7 @@
     <form class="regForm uForm" id="updateForm" name="updateForm" method="post" action="uInfoUpdateResult.php">
         <div class="title">
             <img class="icon" src="../pic/icon2.dark.small.png" alt="" />
-            <p>SURFES<span>上海城市森林生态站数据库系统</span></p>
+            <p>SURFES<span>上海城市森林生态站数据库管理系统</span></p>
         </div>
         <p class="uTitle">更新用户信息</p>
         <p class="t">

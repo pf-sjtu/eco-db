@@ -30,7 +30,7 @@
     <div class="loginForm uForm">
         <div class="title">
             <img class="icon" src="../pic/icon2.dark.small.png" alt="" />
-            <p>SURFES<span>上海城市森林生态站数据库系统</span></p>
+            <p>SURFES<span>上海城市森林生态站数据库管理系统</span></p>
         </div>
         <p class="uTitle">找回密码</p>
         <p class="tLine">

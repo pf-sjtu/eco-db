@@ -22,7 +22,7 @@
         <div id="loadingProgressBox">
             <div id="loadingPageIcon">
                 <img src="pic/icon2.small.png" alt="" /><br />
-                <p class="name">上海城市森林生态站数据库系统</p>
+                <p class="name">上海城市森林生态站数据库管理系统</p>
                 <p class="enName">
                     <span class="sub">Database Management System of </span><br /><span class="cap">S</span><span class="sub">hanghai </span><span class="cap">UR</span><span class="sub">ban </span><span class="cap">F</span><span class="sub">orest </span><span class="cap">E</span><span class="sub">cosystem </span><span class="cap">S</span><span class="sub">tation</span>
                 </p>
@@ -102,7 +102,7 @@
                 </template>
                 <div id="title">
                     <img class="icon" src="pic/icon2.dark.small.png" alt="" />
-                    SURFES<span>上海城市森林生态站数据库系统</span>
+                    SURFES<span>上海城市森林生态站数据库管理系统</span>
                 </div>
             </div>
         </Row>

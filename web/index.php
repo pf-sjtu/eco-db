@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="full">
 
 <head>
     <meta charset="UTF-8" />
@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" href="css/account.css" />
 </head>
 
-<body>
+<body class="full">
     <?php
     session_start();
     if (isset($_SESSION['username']) && $_SESSION['username'] == 'visitor') {
@@ -26,10 +26,10 @@
     require_once('account/welcomeName.php');
     $name = wName($username);
     ?>
-    <div class="uForm">
+    <div class="loginForm uForm">
         <div class="title">
             <img class="icon" src="pic/icon2.dark.small.png" alt="" />
-            <p>SURFES<span>上海城市森林生态站数据库系统</span></p>
+            <p>SURFES<span>上海城市森林生态站数据库管理系统</span></p>
         </div>
         <p class="name"><?php echo $name; ?>，</p>
         <p class="tips">您好！您已经登录到SURFES系统，接下来可以：<br /></p>

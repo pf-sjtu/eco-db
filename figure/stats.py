@@ -5,6 +5,13 @@ Created on Mon Mar 30 17:00:48 2020
 @author: PENG Feng
 @email:  im.pengf@outlook.com
 """
+import add_path
+from wash import (
+    nan_mean_fill,
+    sta_nan_mean_fill
+)
+
+
 import pandas as pd, numpy as np
 import string
 
@@ -56,11 +63,18 @@ def omega_squared(aov):
     return aov
 
 
-def anova(df, formula="r ~ C(a) + C(b) + C(a):C(b)", num=2, qq=False):
-    model = ols(formula, df).fit()
-    aov_table = anova_lm(model, typ=2)
-    if num == 1:
-    elif num == 2:
+def anova(df, formula="r ~ C(a) + C(b) + C(a):C(b)", num=2, qq=False, sta=False, typ=3):
+    if df.isna().sum().sum() > 0:
+        if sta:
+            df2 = sta_nan_mean_fill(df)
+        else:
+            df2 = nan_mean_fill(df)
+    else:
+        df2 = df
+    model = ols(formula, df2).fit()
+    aov_table = anova_lm(model, typ=typ)
+    # if num == 1:
+    if num == 2:
         eta_squared(aov_table)
         omega_squared(aov_table)
     if qq:

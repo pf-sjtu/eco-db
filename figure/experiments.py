@@ -7,7 +7,13 @@ Created on Sat Mar 28 16:56:49 2020
 """
 
 import add_path
-from wash import Wash, gen_sta_period_data, sta_i_desc
+from wash import (
+    Wash,
+    sta_nan_mean_fill,
+    gen_sta_period_data,
+    sta_i_desc,
+    dt_slice,
+)
 from project import Project
 from stats import normal_stats, anova
 from load_mysql_data import mysql_q
@@ -29,6 +35,10 @@ from matplotlib import pyplot as plt
 from matplotlib import dates as mdates
 from matplotlib import cbook as mcbook
 from scipy import stats
+from patsy import dmatrices
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+from statsmodels.stats.anova import anova_lm
 import datetime
 
 plt.rcParams["font.sans-serif"] = ["SimHei"]  # 用来正常显示中文标签
@@ -642,7 +652,10 @@ def sta_anova(plt_i=-1, load=True):
             # 直接对原始数据(trimed)进行方差分析
             print("ANOVA trimed@plt.No{}...".format(plt_i))
             anova_sta_line = anova(
-                df_trimed, "{} ~ C(sta_i)".format(pollutants[plt_i]), qq=False
+                df_trimed,
+                "{} ~ C(sta_i)".format(pollutants[plt_i]),
+                qq=False,
+                sta=False,
             ).loc[["C(sta_i)"], :]
             anova_sta_line.index = ["trimed"]
             anova_sta_line["plt_i"] = plt_i
@@ -651,14 +664,12 @@ def sta_anova(plt_i=-1, load=True):
                 anova_sta = anova_sta_line
             else:
                 anova_sta = pd.concat([anova_sta, anova_sta_line], join="inner")
+        df_inday = inday(load=True, plot=False, all_stations=False, plt_i=-1, sta_i=-1)
         for plt_i in plt_i_range:
             # 对一天以内平均数据(inday)数据进行方差分析
             print("ANOVA inday@plt.No{}...".format(plt_i))
-            df_inday = inday(
-                load=True, plot=False, all_stations=False, plt_i=-1, sta_i=-1
-            )
             anova_sta_line = anova(
-                df_inday, "{} ~ C(sta_i)".format(pollutants[plt_i]), qq=False
+                df_inday, "{} ~ C(sta_i)".format(pollutants[plt_i]), qq=False, sta=False
             ).loc[["C(sta_i)"], :]
             anova_sta_line.index = ["inday"]
             anova_sta_line["plt_i"] = plt_i
@@ -677,7 +688,10 @@ def sta_anova(plt_i=-1, load=True):
             for plt_i in plt_i_range:
                 print("ANOVA hour{}@plt.No{}...".format(hour, plt_i))
                 anova_sta_line = anova(
-                    df_hour, "{} ~ C(sta_i)".format(pollutants[plt_i]), qq=False
+                    df_hour,
+                    "{} ~ C(sta_i)".format(pollutants[plt_i]),
+                    qq=False,
+                    sta=False,
                 ).loc[["C(sta_i)"], :]
                 anova_sta_line.index = ["hour{}".format(hour)]
                 anova_sta_line["plt_i"] = plt_i
@@ -694,41 +708,41 @@ if __name__ == "__main__":
     # proj_ori_hist(sta_i=0, plt_i=0, X_span=[0.01, 9999.98], P=0.99, bins=100)
     # proj_ori_log_hist(sta_i=0, plt_i=0, X_span=[0.01, 9999.98], P=0.99, bins=100)
     # df_ori_norm, df_ori_norm_rep = proj_normalized_check(X_span=[0.01, 9999.98], load=True)
+
     # df_hour_mean = hour_mean(load=True, plot=False, plt_i=-1, sta_i=-1)
-    # df_day_mean = day_mean(load=True, plot=False, plt_i=-1, sta_i=-1)
+    df_day_mean = day_mean(load=True, plot=False, plt_i=-1, sta_i=-1)
     # df_month_mean = month_mean(load=True, plot=False, plt_i=-1, sta_i=-1)
+
     # trim_method_plot(plt_i=-1, sta_i=-1, X_span=[0.01, 9999.98], P=0.99, bins=100)
     # oneday(plt_i=0, sta_i=0, dt_beg="2019-05-12 00:00:00", dt_end="2019-05-13 00:00:00")
     # plt_average_boxplot(plt_i=-1)
+
     # df_inday = inday(load=True, plot=False, all_stations=False, plt_i=-1, sta_i=-1)
+
     # r = sta_i_desc(df_inday)
     # 方差分析：站点
-    anova_sta = sta_anova(plt_i=-1, load=True)
+    # anova_sta = sta_anova(plt_i=-1, load=True)
     # data_sig = anova_sta.loc[anova_sta[]]
 
-    # plt_i = -1
+    # In[0]:
+    # # fig, ax = plt.subplots(figsize=(8,6))
+    plt_i = 0
+    # # # sta_i = 0
+    # # for sta_i in range(len(stations)):
+    # #     df_inday_sta = df_inday.loc[df_inday['sta_i'] == sta_i]
+    # #     ax.scatter(df_inday_sta['datetime'], df_inday_sta[pollutants[plt_i]], alpha=0.5, label=station_snames[sta_i])
+    # #     ax.set_xlabel('datetime')
+    # #     ax.set_ylabel(pollutant_labels[plt_i])
+    # #     ax.legend(loc="top left")
 
-    # anova_all_sta = anova(
-    #     df_trimed, "{} ~ C(sta_i)".format(pollutants[plt_i]), qq=False
-    # )
-    # anova_all_sta2 = anova(
-    #     df_inday, "{} ~ C(sta_i)".format(pollutants[plt_i]), qq=False
-    # )
-    # anova_all_sta3 = anova(
-    #     df_trimed,
-    #     "{} ~ C(sta_i) + C(ssn_i) + C(sta_i):C(ssn_i)".format(pollutants[plt_i]),
-    #     qq=False,
-    # )
-    # df_hour_only = df_trimed.copy()
-    # df_hour_only["datetime"] = pd.to_datetime(
-    #     df_hour_only["datetime"], format="%Y-%m-%d %H:%M"
-    # )
-    # df_hour_only["datetime"] = df_hour_only["datetime"].apply(
-    #     lambda x: datetime.datetime.strftime(x, "%H")
-    # )
-    # anova_all_sta4 = anova(
-    #     df_hour_only,
-    #     "{} ~ C(sta_i) + C(datetime) + C(sta_i):C(datetime)".format(pollutants[plt_i]),
-    #     qq=False,
-    # )
-    # t = dt_day_mean.describe()
+    df_day_mean_filled = sta_nan_mean_fill(df_day_mean)
+    formula="np.log({}) ~ C(sta_i)".format(pollutants[plt_i])
+
+    model = smf.ols(formula=formula, data=df_day_mean_filled)
+    result = model.fit()
+    print(result.summary())
+    anova = anova_lm(result, typ=3)
+    # print(anova)
+
+    # In[1]:
+

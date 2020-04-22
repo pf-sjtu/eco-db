@@ -82,21 +82,22 @@ def nan_mean(series):
     series = np.array(series)
     series_full = series[~np.isnan(series)]
     if len(series_full) > 0:
-        return np.mean(series_full)
+        mean = np.mean(series_full)
     else:
-        return np.nan
+        mean = np.nan
+    return mean
 
 
 def gen_period_data(min_data, dt_format="%Y-%m-%d %H"):
     min_data2 = min_data.copy()
-    min_data2.reset_index(inplace=True)
-    min_data2["datetime"] = pd.to_datetime(
-        min_data2["datetime"], format="%Y-%m-%d %H:%M"
-    )
+    # min_data2.reset_index(inplace=True)
+    # min_data2["datetime"] = pd.to_datetime(
+    #     min_data2["datetime"], format="%Y-%m-%d %H:%M"
+    # )
     min_data2["datetime"] = min_data2["datetime"].apply(
         lambda x: datetime.datetime.strftime(x, dt_format)
     )
-    df = min_data2.pivot_table(index="datetime", aggfunc=nan_mean)
+    df = min_data2.pivot_table(index="datetime", aggfunc=nan_mean, dropna=False)
     return df
 
 
@@ -105,7 +106,7 @@ def gen_sta_period_data(min_data, dt_format="%Y-%m-%d %H"):
     df_per = ""
     for sta_i in range(len(stations)):
         df_per_sta = gen_period_data(
-            df[df["sta_i"] == sta_i].copy().set_index("datetime"), dt_format=dt_format
+            df[df["sta_i"] == sta_i], dt_format=dt_format
         ).reset_index()
         if type(df_per) == str:
             df_per = df_per_sta
@@ -132,26 +133,71 @@ def sta_i_desc(df):
     return desc
 
 
+def nan_mean_fill(df, columns=None):
+    if columns == None:
+        # exclude_type = [object, list, dict, datetime.datetime]
+        # columns = df.columns[[i not in exclude_type for i in df.dtypes]]
+        include_type = ["float64", "float32", "float"]
+        columns = df.columns[[i in include_type for i in df.dtypes]]
+    elif type(columns) == str:
+        columns = [columns]
+    df2 = df.copy()
+    df_ffill = df2[columns].fillna(method="ffill").fillna(method="bfill")
+    df_bfill = df2[columns].fillna(method="bfill").fillna(method="ffill")
+    df2[columns] = (df_ffill + df_bfill) / 2
+    return df2
+
+
+def sta_nan_mean_fill(df, columns=None):
+    df_filled = ""
+    for sta_i in range(len(stations)):
+        df_filled_sta = nan_mean_fill(df[df["sta_i"] == sta_i], columns=columns)
+        if type(df_filled) == str:
+            df_filled = df_filled_sta
+        else:
+            df_filled = pd.concat([df_filled, df_filled_sta], join="inner")
+    return df_filled
+
+
+def dt_slice(df, dt0="0000-00-00 00:00:00", dt1="9999-12-31 23:59:59"):
+    if type(dt0) == str:
+        dt0 = datetime.datetime.strptime(dt0, "%Y-%m-%d %H:%M:%S")
+    if type(dt1) == str:
+        dt1 = datetime.datetime.strptime(dt1, "%Y-%m-%d %H:%M:%S")
+    return df[(df["datetime"] > dt0) & (df["datetime"] < dt1)]
+
+
 if __name__ == "__main__":
-    t = [
-        0,
-        np.nan,
-        np.nan,
-        200,
-        200,
-        200,
-        200,
-        200,
-        200,
-        200,
-        200,
-        200,
-        200,
-        200,
-        200,
-        400,
-    ]
-    wt = Wash(t, verbose=True)
-    tws1, X_span1 = wt.sigma_trim(method="drop")
-    tws2, X_span2 = wt.percentile_trim(method="drop")
-    tws3, X_span3 = wt.MAD_trim(method="drop")
+    # t = [
+    #     0,
+    #     np.nan,
+    #     np.nan,
+    #     200,
+    #     200,
+    #     200,
+    #     200,
+    #     200,
+    #     200,
+    #     200,
+    #     200,
+    #     200,
+    #     200,
+    #     200,
+    #     200,
+    #     400,
+    # ]
+    # wt = Wash(t, verbose=True)
+    # tws1, X_span1 = wt.sigma_trim(method="drop")
+    # tws2, X_span2 = wt.percentile_trim(method="drop")
+    # tws3, X_span3 = wt.MAD_trim(method="drop")
+
+    df = pd.DataFrame(
+        [
+            [np.nan, 2, 2, 0],
+            [3, 4, np.nan, 1],
+            [np.nan, np.nan, np.nan, 5],
+            [np.nan, 3, np.nan, 4],
+        ],
+        columns=list("ABCD"),
+    )
+    df2 = nan_mean_fill(df)

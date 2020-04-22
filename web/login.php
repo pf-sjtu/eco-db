@@ -20,7 +20,7 @@
     <form class="loginForm uForm" name="loginForm" method="post" action="account/chkUser.php">
         <div class="title">
             <img class="icon" src="pic/icon2.dark.small.png" alt="" />
-            <p>SURFES<span>上海城市森林生态站数据库系统</span></p>
+            <p>SURFES<span>上海城市森林生态站数据库管理系统</span></p>
         </div>
         <p class="uTitle">登录系统</p>
         <p class="t">

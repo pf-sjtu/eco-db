@@ -7,7 +7,7 @@
     position: fixed;
 }
 #loadingProgressBox {
-    width: 20rem;
+    width: 23rem;
     min-height: 24rem;
     margin: 0 auto;
     color: #000;
@@ -29,7 +29,7 @@
     font-weight: 400;
     line-height: 2rem;
     display: block;
-    padding-top: 1rem;
+    padding: 1rem 0;
     font-family: STKaiti, serif;
 }
 #loadingPageIcon .enName .cap{

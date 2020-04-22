@@ -27,7 +27,7 @@
                         <i-col span="12"><span class="data">{{ item.data }}</span><span class="unit"> {{ item.unit }}</span></i-col>
                     </Row>
                     <template v-if="eAuth('historyTable')">
-                        <Divider dashed><a href="#" @click.prevent="jumpDetail(info.title, info.dtBegStr)">详细条目</a> </Divider>
+                        <Divider dashed><a href="#" @click.prevent="jumpDetail(info.title, info.dtEndStr)">详细条目</a> </Divider>
                     </template>
                 </div>
             </Card>
